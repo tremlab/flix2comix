@@ -6,6 +6,9 @@ import requests
 import isbnlib
 import sys
 import os
+from model import (User, Movie, Comic, MovieRating, ComicRec,
+                   connect_to_db, db)
+from server import app
 
 # pull api keys from environ (created from secrets file)
 tmdb_key = os.environ["TMDB_KEY"]
@@ -13,18 +16,26 @@ tmdb_read = os.environ["TMDB_READ_TOKEN"]
 isbn_key = os.environ["ISBN_KEY"]
 
 
-def read_movielist(filename):
+def read_movie_list(filename):
     """opens named file, returns a dictionary of all titles (key)
-        & TMDB ids (value)
-        input e.g. Jack+Reacher|999
+        & key as a list of: tmdb_id, catogories
+        input e.g. Avatar|19995|2|3|3|3|5
     """
     movie_ids = {}
 
     with open(filename) as movie_file:
         for movie in movie_file:
             movie = movie.rstrip()
-            title, tmdb_id = movie.split("|")
-            movie_ids[title] = tmdb_id
+
+            title, tmdb_id, VISUAL, LINEAR, CHEERFUL, ACTIVE, MATURE = movie.split("|")
+
+            movie_ids[title] = [tmdb_id,
+                                VISUAL,
+                                LINEAR,
+                                CHEERFUL,
+                                ACTIVE,
+                                MATURE
+                                ]
 
     return movie_ids
 
@@ -58,19 +69,19 @@ def get_bechdel_score(imdb_id):
 
 #bring over manual ratings too?  or handle separately? from read file...
 def process_movie_list(movie_ids):
-    """takes a dictionary of title: tmdb_id,
+    """takes a dictionary of title: list of values,
     collects tmdb data on it (get_movie_tmdb),
     gleans valued data from the entire set,
-    returns a list of dictionaries, ready for the db.
+    and returns a list of dictionaries, ready for the db.
     """
 
     movies = []
 
-    for mtitle, id in movie_ids.items():
-        tmdb = get_movie_tmdb(id)
-
+    for mtitle, data in movie_ids.items():
+        tmdb = get_movie_tmdb(data[0])
         movie = {}
 
+        # pulling data from tmdb object
         movie["tmdb_id"] = tmdb["id"]
         movie["imdb_id"] = tmdb["imdb_id"]
         movie["overview"] = tmdb["overview"]
@@ -78,11 +89,14 @@ def process_movie_list(movie_ids):
         movie["image_src"] = tmdb["poster_path"]  # figure out these paths??
         movie["title"] = tmdb["title"]
         movie["tmdb_rating"] = tmdb["vote_average"]
-        movie["tmdb_genre_list"] = tmdb["genres"]
-        # MPAA rating????
-
-        # add on bechdel rating for each movie
-        movie["bechdel_rating"] = get_bechdel_score(movie["imdb_id"])
+        # pulling data from bechdel test object
+        movie["bechdel_rating"] = int(get_bechdel_score(movie["imdb_id"]))
+        #pulling data dirctly from movie dicitionary (hard-coded)
+        movie["VISUAL"] = int(data[1])
+        movie["LINEAR"] = int(data[2])
+        movie["CHEERFUL"] = int(data[3])
+        movie["ACTIVE"] = int(data[4])
+        movie["MATURE"] = int(data[5])
 
         movies.append(movie)
 
@@ -92,22 +106,39 @@ def process_movie_list(movie_ids):
 ##########################
 # Books
 
-def read_comiclist(filename):
+def read_comic_list(filename):
     """opens named file, returns a dicitionary of all titles (key)
-        & value of a tuple with both ISBN10 & ISBN13
-        input e.g. Nao+of+Brown|1906838429|9781906838423
+        & value as list of ISBN10, and catgory data 
+        input e.g. The Nao of Brown|1906838429|9781906838423|3|6|8|8|3
     """
     comics_ids = {}
 
     with open(filename) as comic_file:
         for comic in comic_file:
             comic = comic.rstrip()
-            title, ISBN10, ISBN13 = comic.split("|")
-            comics_ids[title] = (ISBN10, ISBN13)
+            comic = comic.split("|")
+            #too many to unpack in same line :(
+            title = comic[0]
+            ISBN10 = comic[1]
+            BECH = comic[2]
+            VISUAL = comic[3]
+            LINEAR = comic[4]
+            CHEERFUL = comic[5]
+            ACTIVE = comic[6]
+            MATURE = comic[7]
+
+            comics_ids[title] = [ISBN10,
+                                 BECH,
+                                 VISUAL,
+                                 LINEAR,
+                                 CHEERFUL,
+                                 ACTIVE,
+                                 MATURE
+                                 ]
 
     return comics_ids
 
-#  https://www.comics.org/ ?????
+
 def get_comic_by_isbn(isbn):
     """takes an isbn id string (numbers as string), sends a request to isbndb,
         converts each json response to a dictionary and returns it.
@@ -130,19 +161,31 @@ def process_comic_list(comics_ids):
 
     comics = []
 
-    for ctitle, ISBNs in comics_ids.items():
-        ISBN10 = ISBNs[0]
+    for title, data in comics_ids.items():
+        ISBN10 = data[0]
         isbn = get_comic_by_isbn(ISBN10)
 
         comic = {}
 
+        # catching error - some author data is missing form the API :(
+        if isbn["author_data"] == []:
+            comic["author"] = ""
+        else:
+            comic["author_list"] = isbn["author_data"][0].get("name")
+
         comic["isbn10"] = isbn["isbn10"]
         comic["isbn13"] = isbn["isbn13"]
-        comic["author_list"] = isbn["author_data"]#   [0].get("name")
-        #artist?
         comic["publisher"] = isbn["publisher_name"]
         comic["title"] = isbn["title"]
-        comic["summary"] = isbn["summary"]  # figure out these paths??
+        comic["summary"] = isbn["summary"] 
+        #artist?
+        #pulling data dirctly from movie dicitonary (hard-coded)
+        comic["BECHDEL"] = int(data[1])
+        comic["VISUAL"] = int(data[2])
+        comic["LINEAR"] = int(data[3])
+        comic["CHEERFUL"] = int(data[4])
+        comic["ACTIVE"] = int(data[5])
+        comic["MATURE"] = int(data[6])
 
         comics.append(comic)
 
@@ -150,15 +193,36 @@ def process_comic_list(comics_ids):
     return comics
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     movie_file = sys.args[1]
-#     comic_file = sys.args[2]
+    movie_file = sys.argv[1]
+    comic_file = sys.argv[2]
 
-#     movie_list = read_movielist(movies)
-#     movies = process_movie_list(movie_list)
+    movie_list = read_movie_list(movie_file)
+    movies = process_movie_list(movie_list)
 
-#     comic_list = read_comiclist(comic_file)
-#     comics = process_comic_list(comic_list)
+    comic_list = read_comic_list(comic_file)
+    comics = process_comic_list(comic_list)
+
+    #### testing instantiation!!!
+
+    # cKane = movie[0]
+
+    # cit_kane = Movie(
+    #     tmdb_id=cKane[""],
+    #     imdb_id=cKane[""],
+    #     overview=cKane[""],
+    #     tagline=cKane[""],
+    #     image_src=cKane[""],
+    #     title=cKane[""],
+    #     tmdb_rating=cKane[""],
+    #     bechdel_rating=cKane[""],
+    #     VISUAL=cKane[""],
+    #     LINEAR=cKane[""],
+    #     CHEERFUL=cKane[""],
+    #     ACTIVE=cKane[""],
+    #     MATURE=cKane[""]
+    #     )
+
 
     # instantiate each list on their class and add to db
