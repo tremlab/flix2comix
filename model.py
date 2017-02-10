@@ -19,17 +19,17 @@ class Movie(db.Model):
     image_src = db.Column(db.String(200), nullable=False)
     title = db.Column(db.String(200), nullable=False)
     tmdb_rating = db.Column(db.Numeric(asdecimal=True))
-    bechdel_rating = db.Column(db.Integer, nullable=False)
-    VISUAL = db.Column(db.Integer, nullable=False)
-    LINEAR = db.Column(db.Integer, nullable=False)
-    CHEERFUL = db.Column(db.Integer, nullable=False)
-    ACTIVE = db.Column(db.Integer, nullable=False)
-    MATURE = db.Column(db.Integer, nullable=False)
+    bechdel = db.Column(db.Integer, nullable=False)
+    # below are deliberately non-normalized for efficiency
+    visual = db.Column(db.Integer, nullable=False)
+    linear = db.Column(db.Integer, nullable=False)
+    cheerful = db.Column(db.Integer, nullable=False)
+    active = db.Column(db.Integer, nullable=False)
+    mature = db.Column(db.Integer, nullable=False)
 
-    # manually coded categories
-
-    ratings = db.relationship("MovieRating")
-    users = db.relationship("User", secondary="MovieRating")
+    # implicit:
+    # movie_ratings = db.relationship("MovieRating")
+    # users = db.relationship("User", secondary=movie_ratings)
 
     def __repr__():
         pass
@@ -42,18 +42,23 @@ class Comic(db.Model):
     __tablename__ = "comics"
 
     comic_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    isbn10 = db.Column(db.String(10), primary_key=True)
+    isbn10 = db.Column(db.String(10))
     isbn13 = db.Column(db.String(13), unique=True)
     author = db.Column(db.String(100))
     artist = db.Column(db.String(50))  # if artist is not writer
     publisher = db.Column(db.String(50))
     title = db.Column(db.String(200))
     summary = db.Column(db.UnicodeText)
-
-    # manually coded categories
-
-    recs = db.relationship("ComicRec")
-    user = db.relationship("User", secondary="ComicRec")
+    # below are deliberately non-normalized for efficiency
+    bechdel = db.Column(db.Integer, nullable=False) 
+    visual = db.Column(db.Integer, nullable=False)
+    linear = db.Column(db.Integer, nullable=False)
+    cheerful = db.Column(db.Integer, nullable=False)
+    active = db.Column(db.Integer, nullable=False)
+    mature = db.Column(db.Integer, nullable=False)
+    # implicit:
+    # comic_recs = db.relationship("ComicRec")
+    # user = db.relationship("User", secondary=comic_recs)
 
     def __repr__():
         pass
@@ -68,12 +73,42 @@ class User(db.Model):
     email = db.Column(db.String(50))
     password = db.Column(db.String(12))
 
-    # calculated preferences for profile
+    # implicit:
+    # movie_ratings = db.relationship("MovieRating")
+    # comic_recs = db.relationship("ComicRec")
+    # movies = db.relationship("Movie", secondary=movie_rating)
+    # comics = db.relationship("Comic", secondary=comic_recs)
 
-    ratings = db.relationship("MovieRating")
-    recs = db.relationship("ComicRec")
-    movies = db.relationship("Movie", secondary="MovieRating")
-    comics = db.relationship("Comic", secondary="ComicRec")
+    # def get_rating_profile(self):
+    #     """user ratings will be dynamically called,
+    #         since ratings may be added or changed over time.
+    #     """
+    #     user = User.query.get(self.user_id)
+    #     #list of movie ratings objects for this user
+    #     ratings = user.movie_ratings
+
+    #     user_category_ratings = {
+    #         "bechdel": 0,
+    #         "visual": 0,
+    #         "linear": 0,
+    #         "cheerful": 0,
+    #         "active": 0,
+    #         "mature": 0,
+    #     }
+
+    #     for r in ratings:
+    #         #weight the category rating by how much the user liked the movie
+    #         for category, score in user_category_ratings.items():
+    #             score += (r.rating * r.movie.category)
+
+    #     #divide by # of ratings for average
+    #     for category, score in user_category_ratings.items():
+    #         score = score / len(ratings)
+    #     #divide by 5 (highest score) to get back to scale
+    #         scores = score / 5
+
+    #     return user_category_ratings
+
 
     def __repr__():
         pass
@@ -87,12 +122,12 @@ class MovieRating(db.Model):
 
     mr_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    movie_id = db.Column(db.String(12), db.ForeignKey('movies.movie_id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'), nullable=False)
     rating = db.Column(db.Integer, nullable=False)  # 1-5
     rated_at = db.Column(db.Date)
 
-    user = db.relationship("User")
-    movie = db.relationship("Movie")
+    user = db.relationship("User", backref="movie_ratings")
+    movie = db.relationship("Movie", backref="movie_ratings")
 
     def __repr__():
         pass
@@ -106,13 +141,13 @@ class ComicRec(db.Model):
 
     cr_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    movie_id = db.Column(db.String(12), db.ForeignKey('comics.comic_id'), nullable=False)
+    comic_id = db.Column(db.Integer, db.ForeignKey('comics.comic_id'), nullable=False)
     recd_at = db.Column(db.Date)
     user_read = db.Column(db.Boolean)
     user_rating = db.Column(db.Integer)  # 1-5
 
-    user = db.relationship("User")
-    comic = db.relationship("Comic")
+    user = db.relationship("User", backref="comic_recs")
+    comic = db.relationship("Comic", backref="comic_recs")
 
     def __repr__():
         pass
@@ -129,6 +164,6 @@ if __name__ == '__main__':
     """if run directly, allows for interaction with database.
     """
 
-    from server im[port app
+    from server import app
     connect_to_db(app)
     print "Connected to DB!"

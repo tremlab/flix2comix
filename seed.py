@@ -27,14 +27,14 @@ def read_movie_list(filename):
         for movie in movie_file:
             movie = movie.rstrip()
 
-            title, tmdb_id, VISUAL, LINEAR, CHEERFUL, ACTIVE, MATURE = movie.split("|")
+            title, tmdb_id, visual, linear, cheerful, active, mature = movie.split("|")
 
             movie_ids[title] = [tmdb_id,
-                                VISUAL,
-                                LINEAR,
-                                CHEERFUL,
-                                ACTIVE,
-                                MATURE
+                                visual,
+                                linear,
+                                cheerful,
+                                active,
+                                mature
                                 ]
 
     return movie_ids
@@ -90,13 +90,13 @@ def process_movie_list(movie_ids):
         movie["title"] = tmdb["title"]
         movie["tmdb_rating"] = tmdb["vote_average"]
         # pulling data from bechdel test object
-        movie["bechdel_rating"] = int(get_bechdel_score(movie["imdb_id"]))
-        #pulling data dirctly from movie dicitionary (hard-coded)
-        movie["VISUAL"] = int(data[1])
-        movie["LINEAR"] = int(data[2])
-        movie["CHEERFUL"] = int(data[3])
-        movie["ACTIVE"] = int(data[4])
-        movie["MATURE"] = int(data[5])
+        movie["bechdel"] = int(get_bechdel_score(movie["imdb_id"]))
+        #pulling data directly from movie dicitionary (hard-coded)
+        movie["visual"] = int(data[1])
+        movie["linear"] = int(data[2])
+        movie["cheerful"] = int(data[3])
+        movie["active"] = int(data[4])
+        movie["mature"] = int(data[5])
 
         movies.append(movie)
 
@@ -120,20 +120,20 @@ def read_comic_list(filename):
             #too many to unpack in same line :(
             title = comic[0]
             ISBN10 = comic[1]
-            BECH = comic[2]
-            VISUAL = comic[3]
-            LINEAR = comic[4]
-            CHEERFUL = comic[5]
-            ACTIVE = comic[6]
-            MATURE = comic[7]
+            bech = comic[2]
+            visual = comic[3]
+            linear = comic[4]
+            cheerful = comic[5]
+            active = comic[6]
+            mature = comic[7]
 
             comics_ids[title] = [ISBN10,
-                                 BECH,
-                                 VISUAL,
-                                 LINEAR,
-                                 CHEERFUL,
-                                 ACTIVE,
-                                 MATURE
+                                 bech,
+                                 visual,
+                                 linear,
+                                 cheerful,
+                                 active,
+                                 mature
                                  ]
 
     return comics_ids
@@ -171,7 +171,7 @@ def process_comic_list(comics_ids):
         if isbn["author_data"] == []:
             comic["author"] = ""
         else:
-            comic["author_list"] = isbn["author_data"][0].get("name")
+            comic["author"] = isbn["author_data"][0].get("name")
 
         comic["isbn10"] = isbn["isbn10"]
         comic["isbn13"] = isbn["isbn13"]
@@ -180,12 +180,12 @@ def process_comic_list(comics_ids):
         comic["summary"] = isbn["summary"] 
         #artist?
         #pulling data dirctly from movie dicitonary (hard-coded)
-        comic["BECHDEL"] = int(data[1])
-        comic["VISUAL"] = int(data[2])
-        comic["LINEAR"] = int(data[3])
-        comic["CHEERFUL"] = int(data[4])
-        comic["ACTIVE"] = int(data[5])
-        comic["MATURE"] = int(data[6])
+        comic["bechdel"] = int(data[1])
+        comic["visual"] = int(data[2])
+        comic["linear"] = int(data[3])
+        comic["cheerful"] = int(data[4])
+        comic["active"] = int(data[5])
+        comic["mature"] = int(data[6])
 
         comics.append(comic)
 
@@ -194,6 +194,12 @@ def process_comic_list(comics_ids):
 
 
 if __name__ == '__main__':
+    """connect to database, run api requests, instantiate
+        objects, add to db.
+    """
+    connect_to_db(app)
+
+    db.create_all()
 
     movie_file = sys.argv[1]
     comic_file = sys.argv[2]
@@ -204,25 +210,47 @@ if __name__ == '__main__':
     comic_list = read_comic_list(comic_file)
     comics = process_comic_list(comic_list)
 
-    #### testing instantiation!!!
+    # instatiate and add movies to db
+    for c in comics:
 
-    # cKane = movie[0]
+        comic = Comic(
+            isbn10=c["isbn10"],
+            isbn13=c["isbn13"],
+            author=c["author"],
+            publisher=c["publisher"],
+            summary=c["summary"],
+            title=c["title"],
+            bechdel=c["bechdel"],
+            visual=c["visual"],
+            linear=c["linear"],
+            cheerful=c["cheerful"],
+            active=c["active"],
+            mature=c["mature"]
+            )
 
-    # cit_kane = Movie(
-    #     tmdb_id=cKane[""],
-    #     imdb_id=cKane[""],
-    #     overview=cKane[""],
-    #     tagline=cKane[""],
-    #     image_src=cKane[""],
-    #     title=cKane[""],
-    #     tmdb_rating=cKane[""],
-    #     bechdel_rating=cKane[""],
-    #     VISUAL=cKane[""],
-    #     LINEAR=cKane[""],
-    #     CHEERFUL=cKane[""],
-    #     ACTIVE=cKane[""],
-    #     MATURE=cKane[""]
-    #     )
+        db.session.add(comic)
 
+    db.session.commit()
 
-    # instantiate each list on their class and add to db
+    # instatiate and add movies to db
+    for m in movies:
+        movie = Movie(
+            tmdb_id=m["tmdb_id"],
+            imdb_id=m["imdb_id"],
+            overview=m["overview"],
+            tagline=m["tagline"],
+            image_src=m["image_src"],
+            title=m["title"],
+            tmdb_rating=m["tmdb_rating"],
+            bechdel=m["bechdel"],
+            visual=m["visual"],
+            linear=m["linear"],
+            cheerful=m["cheerful"],
+            active=m["active"],
+            mature=m["mature"]
+            )
+
+        db.session.add(movie)
+
+    db.session.commit()
+
