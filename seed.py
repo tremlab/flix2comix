@@ -26,14 +26,23 @@ def read_movie_list(filename):
     with open(filename) as movie_file:
         for movie in movie_file:
             movie = movie.rstrip()
+            movie = movie.split("|")
 
-            title, tmdb_id, visual, linear, cheerful, active, mature = movie.split("|")
+            title = movie[0]
+            tmdb_id = movie[1]
+            visual = movie[2]
+            linear = movie[3]
+            cheerful = movie[4]
+            active = movie[5]
+            magical = movie[6]
+            mature = movie[7]
 
             movie_ids[title] = [tmdb_id,
                                 visual,
                                 linear,
                                 cheerful,
                                 active,
+                                magical,
                                 mature
                                 ]
 
@@ -80,7 +89,7 @@ def process_movie_list(movie_ids):
     for mtitle, data in movie_ids.items():
         tmdb = get_movie_tmdb(data[0])
         movie = {}
-
+        print mtitle
         # pulling data from tmdb object
         movie["tmdb_id"] = tmdb["id"]
         movie["imdb_id"] = tmdb["imdb_id"]
@@ -90,13 +99,16 @@ def process_movie_list(movie_ids):
         movie["title"] = tmdb["title"]
         movie["tmdb_rating"] = tmdb["vote_average"]
         # pulling data from bechdel test object
-        movie["bechdel"] = int(get_bechdel_score(movie["imdb_id"]))
-        #pulling data directly from movie dicitionary (hard-coded)
+        bechdel = int(get_bechdel_score(movie["imdb_id"]))
+        #bechdel given as 0-3, scale to -4 : 4, like other categories
+        movie["bechdel"] = int((bechdel-1.5) * 2.67)
+        #pulling data directly from movie dictionary (hard-coded, in range of -4 : 4)
         movie["visual"] = int(data[1])
         movie["linear"] = int(data[2])
         movie["cheerful"] = int(data[3])
         movie["active"] = int(data[4])
-        movie["mature"] = int(data[5])
+        movie["magical"] = int(data[5])
+        movie["mature"] = int(data[6])
 
         movies.append(movie)
 
@@ -125,7 +137,8 @@ def read_comic_list(filename):
             linear = comic[4]
             cheerful = comic[5]
             active = comic[6]
-            mature = comic[7]
+            magical = comic[7]
+            mature = comic[8]
 
             comics_ids[title] = [ISBN10,
                                  bech,
@@ -133,6 +146,7 @@ def read_comic_list(filename):
                                  linear,
                                  cheerful,
                                  active,
+                                 magical,
                                  mature
                                  ]
 
@@ -164,7 +178,7 @@ def process_comic_list(comics_ids):
     for title, data in comics_ids.items():
         ISBN10 = data[0]
         isbn = get_comic_by_isbn(ISBN10)
-
+        print title
         comic = {}
 
         # catching error - some author data is missing form the API :(
@@ -185,7 +199,8 @@ def process_comic_list(comics_ids):
         comic["linear"] = int(data[3])
         comic["cheerful"] = int(data[4])
         comic["active"] = int(data[5])
-        comic["mature"] = int(data[6])
+        comic["magical"] = int(data[6])
+        comic["mature"] = int(data[7])
 
         comics.append(comic)
 
@@ -212,7 +227,7 @@ if __name__ == '__main__':
 
     # instatiate and add movies to db
     for c in comics:
-
+        print c["isbn13"], c["title"]
         comic = Comic(
             isbn10=c["isbn10"],
             isbn13=c["isbn13"],
@@ -225,6 +240,7 @@ if __name__ == '__main__':
             linear=c["linear"],
             cheerful=c["cheerful"],
             active=c["active"],
+            magical=c["magical"],
             mature=c["mature"]
             )
 
@@ -247,6 +263,7 @@ if __name__ == '__main__':
             linear=m["linear"],
             cheerful=m["cheerful"],
             active=m["active"],
+            magical=m["magical"],
             mature=m["mature"]
             )
 
@@ -254,3 +271,7 @@ if __name__ == '__main__':
 
     db.session.commit()
 
+
+
+
+# Y+Tu+Mama+Tambien|1391|2|-1|2|3|3|3
