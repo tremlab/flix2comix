@@ -3,7 +3,6 @@
 
 import json
 import requests
-import isbnlib
 import sys
 import os
 from model import (User, Movie, Comic, MovieRating, ComicRec,
@@ -18,8 +17,8 @@ isbn_key = os.environ["ISBN_KEY"]
 
 def read_movie_list(filename):
     """opens named file, returns a dictionary of all titles (key)
-        & key as a list of: tmdb_id, catogories
-        input e.g. Avatar|19995|2|3|3|3|5
+        & a list of: tmdb_id, catogories (value)
+        input e.g. Avatar|19995|-4|3|0|3|-1|2
     """
     movie_ids = {}
 
@@ -120,8 +119,8 @@ def process_movie_list(movie_ids):
 
 def read_comic_list(filename):
     """opens named file, returns a dicitionary of all titles (key)
-        & value as list of ISBN10, and catgory data 
-        input e.g. The Nao of Brown|1906838429|9781906838423|3|6|8|8|3
+        & value as list of ISBN10, and catgory data
+        input e.g. The Nao of Brown|1906838429|9781906838423|3|-2|0|-1|1|3
     """
     comics_ids = {}
 
@@ -158,7 +157,7 @@ def get_comic_by_isbn(isbn):
         converts each json response to a dictionary and returns it.
     """
 
-    isbn_request = "http://isbndb.com/api/v2/json/" + isbn_key + "/book/" + isbn 
+    isbn_request = "http://isbndb.com/api/v2/json/" + isbn_key + "/book/" + isbn
     r = requests.get(isbn_request)
     comic = r.json()
     comic_data = comic['data'][0]
