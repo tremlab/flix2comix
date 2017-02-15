@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form action="/login-validation" method="POST">
+    Email: <input type="text" name="email">
+    Password: <input type="password" name="password">
+    <input type="submit">
+</form>
+
+{% endblock %}

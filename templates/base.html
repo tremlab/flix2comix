@@ -1,4 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <link href='/static/css/flix2comics.css' rel="stylesheet" type="text/css">
+  <script src='/static/js/flix2comics.js'></script>
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <title>{%block title %} {% endblock %}</title>
+</head>
 
+<body>
+    <div id="banner"><img src="/static/images/tremlab.jpg">
+    <h1>flix2comix</h1><h3>by tremlab</h3></div>
+
+    <ul>
+        {% for message in get_flashed_messages() %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+
+{% block content %} 
+        put your content here 
+{% endblock %}
+
+{% if "user_id" in session %}
+
+  <form action="/logout" method="get">
+    <button type="submit" id="logout" value="Logout">Logout</button>
+  </form>
+
+{% endif %}
+</body>
+</html>
 
 
 
