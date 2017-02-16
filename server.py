@@ -101,25 +101,47 @@ def show_movies():
 def submit_movie_ratings():
     """collect user's movie ratings, add info to database, send to comics page.
     """
-    # must iterate through form, since we don't know how many repsonses.
+    # must iterate through entire form, since we don't know how many repsonses.
     ratings = request.form
-    user = session["user_id"]
+    u_id = session["user_id"]
 
     for mv, r in ratings.items():
         #convert from string response
         mv = int(mv)
         r = int(r)
-
+        # only for movies rated (not 0, which is default)
         if r != 0:
-            mrating = MovieRating(user_id=user, movie_id=mv, rating=r)
-            db.session.add(mrating)
-        ### need to double check if movie has been rated already....
+            # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
+            r = r - 3
+            # call function to handle each rating.
+            analysis.process_user_rating(u_id, mv, r)
 
-    db.session.commit()
+    return redirect("/comic")
 
-    return render_template("comic.html")
 
+@app.route('/comic', methods=["POST"])
+def show_comic():
+    """display to the user all the info on their recommended comic.
+        will load automatically after they rate movies,
+        but they also may want to call again to get a 2nd, 3rd book.
+        function makes sure not to recommend same book twice to same user. ;)
+    """
+    u_id = session["user_id"]
+    recommended_comic = analysis.get_comic_rec(u_id)
+
+    return render_template("comics.html", comic=recommended_comic)
+
+
+@app.route('/user')
+def show_user_info():
+    """show user nickname, email. reset password button?
+        list of their comic recs so far.
+        list of movie ratings so far.
+    """
     pass
+
+
+##################################################
 
 if __name__ == '__main__':
 

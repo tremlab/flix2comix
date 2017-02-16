@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}flix2comix -  Welcome{% endblock %}
+{% block title %}flix2comix -  Your Comic!{% endblock %}
 
 {% block content %}
 
+    <h2>We recommend you read: </h2>
+    <h1>{{ comic.title }}</h1>
+    <img src="http://covers.openlibrary.org/b/isbn/{{ comic.isbn10 }}-S.jpg">
+    <p>{{ comic.author }}</p>
+    <p>{{ comic.artist }}</p>
+    <p>{{ comic.publisher }}</p>
+    <div id="blurb">
+        <p>{{ comic.summary }}</p>
+    </div>
 
-    <p>comix 4EVA!!!!!!!</p>
-
+    <a href="/comic"><button type="button" id="login">
+        Another Book!</button></a>
+    <a href="/rate"><button type="sign up" id="signup">
+        Rate More Movies</button></a>
 
 {% endblock %}

@@ -1,9 +1,30 @@
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from datetime import date
+from flask import flash
 # from server import app
 
+
+def process_user_rating(u_id, mv, r):
+    """given a user_id, movie_id, & user rating, determine if this is a NEW or
+        UPDATING event, and handle accordingly.
+    """
+    try:
+        # check if this user/movie combo already has a record in the db.
+        ############ enforce uniqueness on mock data :(
+        this_rating = MovieRating.query.filter(MovieRating.user_id == u_id,
+                                               MovieRating.movie_id == mv).one()
+        # update to new rating value given by user
+        this_rating.rating = r
+        title = this_rating.movie.title
+        ##################TEST###################
+        flash("Updated your rating for %s") % (title)
+    except NoResultFound:
+        mrating = MovieRating(user_id=u_id, movie_id=mv, rating=r)
+        db.session.add(mrating)
+
+    db.session.commit()
 
 
 def get_profile(u_id):
@@ -101,6 +122,7 @@ def get_user_match(user_profile, u_id):
 def get_comic_rec(u_id):
     """From user_id, calls for user profile to be genreated,
         then calls for single comic that best matches that profile.
+        Returns book object.
     """
     #from rating data, get the aggregate preferences for this user.
     profile = get_profile(u_id)
