@@ -54,7 +54,7 @@ class Movie(db.Model):
 
 
 class Comic(db.Model):
-    """class for comic info
+    """class for comic book info
     """
 
     __tablename__ = "comics"

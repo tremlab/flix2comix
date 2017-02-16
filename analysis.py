@@ -68,16 +68,21 @@ def get_user_match(user_profile, u_id):
     """
 
     # collect all comcis and their previous recommendations
-    comics = db.session.query(Comic, ComicRec).outerjoin(ComicRec).all()
+    comics = Comic.query.all()
+    print "initial query[0]", comics[0]
+    previous_recs = ComicRec.query.filter(ComicRec.user_id == u_id)
+    print previous_recs
 
+    eliminate_comic_ids = []
     available_comics = []
-    #eliminate any comics that have ALREADY been recommended to this person.
-    for comic, rec in comics:
-        if rec is not None:
-            if rec.user_id != u_id:
-                available_comics.append(comic)
-        else:
+
+    for rec in previous_recs:
+        eliminate_comic_ids.append(rec.comic_id)
+    print "bad comics", eliminate_comic_ids
+    for comic in comics:
+        if comic.comic_id not in eliminate_comic_ids:
             available_comics.append(comic)
+    print "good comics", available_comics
 
     #to hold the results of each evaluation against user profile.
     ####list of tuples... (discprepancy, comic_id)
