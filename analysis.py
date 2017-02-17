@@ -3,6 +3,8 @@ from model import (User, Movie, Comic, MovieRating, ComicRec,
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from flask import flash
+from sqlalchemy.orm.exc import NoResultFound
+
 # from server import app
 
 
@@ -18,8 +20,8 @@ def process_user_rating(u_id, mv, r):
         # update to new rating value given by user
         this_rating.rating = r
         title = this_rating.movie.title
-        ##################TEST###################
-        flash("Updated your rating for %s") % (title)
+        update = "Updated your rating for %s" % (title)
+        flash(update)
     except NoResultFound:
         mrating = MovieRating(user_id=u_id, movie_id=mv, rating=r)
         db.session.add(mrating)
@@ -69,20 +71,16 @@ def get_user_match(user_profile, u_id):
 
     # collect all comcis and their previous recommendations
     comics = Comic.query.all()
-    print "initial query[0]", comics[0]
     previous_recs = ComicRec.query.filter(ComicRec.user_id == u_id)
-    print previous_recs
 
     eliminate_comic_ids = []
     available_comics = []
 
     for rec in previous_recs:
         eliminate_comic_ids.append(rec.comic_id)
-    print "bad comics", eliminate_comic_ids
     for comic in comics:
         if comic.comic_id not in eliminate_comic_ids:
             available_comics.append(comic)
-    print "good comics", available_comics
 
     #to hold the results of each evaluation against user profile.
     ####list of tuples... (discprepancy, comic_id)

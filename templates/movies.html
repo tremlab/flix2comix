@@ -5,7 +5,7 @@
 
 
     <p>Please rate at least 5 movies (or as many as you want!)</p>
-
+<div class="movies">
     <form action="/rate" method="post">
         {% for movie in movies %}
             <img src="https://image.tmdb.org/t/p/w500{{ movie.image_src }}"><br>
@@ -21,6 +21,6 @@
         {% endfor %}
         <input type="submit">
     </form>
-
+</div>
 
 {% endblock %}

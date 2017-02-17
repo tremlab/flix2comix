@@ -5,7 +5,7 @@
 
     <h2>We recommend you read: </h2>
     <h1>{{ comic.title }}</h1>
-    <img src="http://covers.openlibrary.org/b/isbn/{{ comic.isbn10 }}-S.jpg">
+    <img src="http://covers.openlibrary.org/b/isbn/{{ comic.isbn10 }}-L.jpg">
     <p>{{ comic.author }}</p>
     <p>{{ comic.artist }}</p>
     <p>{{ comic.publisher }}</p>
@@ -13,9 +13,11 @@
         <p>{{ comic.summary }}</p>
     </div>
 
-    <a href="/comic"><button type="button" id="login">
-        Another Book!</button></a>
-    <a href="/rate"><button type="sign up" id="signup">
-        Rate More Movies</button></a>
+      <form action="/comic" method="POST">
+        <button type="submit" id="login">Another Book!</button></a>
+      </form>
+        <form action="/movies" method="get">
+        <button type="submit" id="register">Rate More Movies</button></a>
+      </form>
 
 {% endblock %}

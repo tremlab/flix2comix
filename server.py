@@ -48,7 +48,7 @@ def process_register_form():
 
         session['user_id'] = user.user_id
         flash("You are registered & logged in.")
-        return render_template("homepage.html")
+        return redirect("/movies")
 
 
 @app.route('/login', methods=["GET"])
@@ -57,6 +57,7 @@ def display_login_form():
     """
 
     return render_template("login_form.html")
+
 
 @app.route('/login-validation', methods=["POST"])
 def process_login_form():
@@ -75,8 +76,7 @@ def process_login_form():
     if password == user_check.password:
         session['user_id'] = user_check.user_id
         flash("Logged in successfully")
-        route = "/userpage/" + str(user_check.user_id)
-        return redirect(route)
+        return redirect("/movies")
     else:
         flash("Wrong password!")
         return render_template("login_form.html")
@@ -118,8 +118,8 @@ def submit_movie_ratings():
 
     return redirect("/comic")
 
-
-@app.route('/comic', methods=["POST"])
+############# method post???
+@app.route('/comic', methods=["POST", "GET"])
 def show_comic():
     """display to the user all the info on their recommended comic.
         will load automatically after they rate movies,
@@ -139,6 +139,8 @@ def show_user_info():
         list of movie ratings so far.
     """
     pass
+    route = "/userpage/" + str(session["user_id"])
+    return redirect(route)
 
 
 ##################################################
