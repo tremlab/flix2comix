@@ -152,10 +152,10 @@ class ComicRec(db.Model):
 #___________________________________________________________________________
 
 
-def connect_to_db(app):
+def connect_to_db(app, db_name="flix2comix"):
     """Connect to database."""
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///flix2comix'
+    db_path = 'postgresql:///%s' % (db_name)
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_path
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)

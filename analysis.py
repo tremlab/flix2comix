@@ -1,11 +1,8 @@
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
-# from flask_sqlalchemy import SQLAlchemy
 from datetime import date
 from flask import flash
 from sqlalchemy.orm.exc import NoResultFound
-
-# from server import app
 
 
 def process_user_rating(u_id, mv, r):
