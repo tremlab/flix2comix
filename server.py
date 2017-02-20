@@ -34,6 +34,7 @@ def display_register_form():
 def process_register_form():
     email = request.form.get("email")
     password = request.form.get("password")
+    nickname = request.form.get("nickname")
 
     #Check if user already exists, if not create user and add to table
     try:
@@ -42,7 +43,8 @@ def process_register_form():
         return render_template("register_form.html")
     except NoResultFound:
         user = User(email=email,
-                    password=password)
+                    password=password,
+                    nickname=nickname)
         db.session.add(user)
         db.session.commit()
 
