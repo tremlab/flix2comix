@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}flix2comix - User page{% endblock %}
+
+{% block content %}
+    <h1>Hello, {{ user.nickname|default("you", true) }}!</h1><br>
+    <div class="user_info">
+        email: {{ user.email }}
+        <!-- reset password?? -->
+    </div>
+
+    <p>Here are the movies you've rated so far:</p>
+
+<div class="movies">
+    <!-- send to different route... just rate movie, don't get comic -->
+    <form action="/update_rate" method="post">
+        {% for movie in movies %}
+            <img src="https://image.tmdb.org/t/p/w500{{ movie[1].image_src }}"><br>
+            <h2>{{ movie[1].title }}</h2><br>
+            <!-- how to refer to RATING table info? -->
+            Current rating: {{ movie[0].rating + 3 }}<br>
+            change rating to:<select name="{{ movie.movie_id }}" id="{{ movie.movie_id }}">
+                <option value="0"></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select><br><br><br>          
+        {% endfor %}
+        <input type="submit">
+    </form>
+</div>
+
+    <p>Here are the comics wev'e suggested to you:</p>
+    <p>(Please rate any that you have read. We love feedback!!)
+
+<div class="comics">
+    <!-- send to different route... just rate movie, don't get comic -->
+    <form action="/update_comic" method="post">
+        {% for comic in comics %}
+            <img src=""><br>
+
+
+            <h2>{{ comic[1].title }}</h2><br>
+            <!-- how to refer to RATING table info? -->
+            <p>Current rating: {{ comic[0].user_rating|default('not rated', true) }} <br>
+            change rating to:<select name="{{ comic.comic_id }}" id="{{ comic.comic_id }}">
+                <option value="0"></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select><br><br><br>          
+        {% endfor %}
+        <input type="submit">
+    </form>
+</div>
+
+{% endblock %}

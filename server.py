@@ -118,6 +118,52 @@ def submit_movie_ratings():
 
     return redirect("/comic")
 
+
+@app.route('/update_rate', methods=["POST"])
+def update_movie_ratings():
+    """collect user's movie ratings, add info to database, reload user page.
+    """
+    ##############DRY??? refactor into rate??#######
+    # must iterate through entire form, since we don't know how many repsonses.
+    ratings = request.form
+    u_id = session["user_id"]
+
+    for mv, r in ratings.items():
+        #convert from string response
+        mv = int(mv)
+        r = int(r)
+        # only for movies rated (not 0, which is default)
+        if r != 0:
+            # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
+            r = r - 3
+            # call function to handle each rating.
+            analysis.process_user_rating(u_id, mv, r)
+
+    return redirect("/user")
+
+
+@app.route('/update_comic', methods=["POST"])
+def update_comic_ratings():
+    """collect user's comic ratings, add info to database, reload user page.
+    """
+    ##############DRY??? refactor into rate??#######
+    # must iterate through entire form, since we don't know how many repsonses.
+    ratings = request.form
+    u_id = session["user_id"]
+
+    for cm, r in ratings.items():
+        #convert from string response
+        cm = int(cm)
+        r = int(r)
+        # only for movies rated (not 0, which is default)
+        if r != 0:
+            # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
+            r = r - 3
+            # call function to handle each rating.
+            analysis.process_comic_rating(u_id, cm, r)
+
+    return redirect("/user")
+
 ############# method post???
 @app.route('/comic', methods=["POST", "GET"])
 def show_comic():
@@ -126,6 +172,7 @@ def show_comic():
         but they also may want to call again to get a 2nd, 3rd book.
         function makes sure not to recommend same book twice to same user. ;)
     """
+    # handle if no user_id??
     u_id = session["user_id"]
     recommended_comic = analysis.get_comic_rec(u_id)
 
@@ -135,12 +182,16 @@ def show_comic():
 @app.route('/user')
 def show_user_info():
     """show user nickname, email. reset password button?
-        list of their comic recs so far.
-        list of movie ratings so far.
+        list of their comic recs so far, and edit.
+        list of movie ratings so far, and edit.
     """
-    pass
-    route = "/userpage/" + str(session["user_id"])
-    return redirect(route)
+    # handle if no user_id??
+    u_id = session["user_id"]
+    user = User.query.get(u_id)
+    movies = analysis.get_user_movies(u_id)
+    comics = analysis.get_user_comics(u_id)
+
+    return render_template("user.html", user=user, movies=movies, comics=comics)
 
 
 ##################################################

@@ -102,7 +102,7 @@ class User(db.Model):
     # comics = db.relationship("Comic", secondary=comic_recs)
 
     def __repr__(self):
-        return "User_id: %i, email: %s" % (self.user_id, self.email)
+        return "<User_id: %i, email: %s>" % (self.user_id, self.email)
 
 
 class MovieRating(db.Model):
@@ -123,8 +123,8 @@ class MovieRating(db.Model):
     movie = db.relationship("Movie", backref="movie_ratings")
 
     def __repr__(self):
-        return """"mr_id: %i, user_id: %i, movie_id: %i,
-        rating: %i""" % (self.mr_id, self.user_id, self.movie_id, self.rating)
+        return """<mr_id: %i, user_id: %i, movie_id: %i,
+        rating: %i>""" % (self.mr_id, self.user_id, self.movie_id, self.rating)
 
 
 class ComicRec(db.Model):
@@ -146,7 +146,7 @@ class ComicRec(db.Model):
     comic = db.relationship("Comic", backref="comic_recs")
 
     def __repr__(self):
-        return "cr_id: %i, user_id: %i, comic_id: %i" % (self.cr_id, self.user_id, self.comic_id)
+        return "<cr_id: %i, user_id: %i, comic_id: %i>" % (self.cr_id, self.user_id, self.comic_id)
 
 #___________________________________________________________________________
 #___________________________________________________________________________

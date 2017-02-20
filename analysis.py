@@ -26,6 +26,45 @@ def process_user_rating(u_id, mv, r):
     db.session.commit()
 
 
+#####DRY################????
+def process_comic_rating(u_id, cm, r):
+    """given a user_id, comic_id, & user rating, determine if this is a NEW or
+        UPDATING event, and handle accordingly.
+    """
+    try:
+        # check if this user/comic combo already has a record in the db.
+        this_rating = ComicRec.query.filter(ComicRec.user_id == u_id,
+                                               ComicRec.comic_id == cm).one()
+        # update to new rating value given by user
+        this_rating.user_rating = r
+        title = this_rating.comic.title
+        update = "Updated your rating for %s" % (title)
+        # flash(update)
+    except NoResultFound:
+        c_rating = ComicRec(user_id=u_id, comic_id=cm, user_rating=r)
+        db.session.add(c_rating)
+
+    db.session.commit()
+
+
+def get_user_movies(u_id):
+    """find all movies this user (by user_id) has rated.
+        returns list of movie objects.
+    """
+    ###test
+    movies = db.session.query(MovieRating, Movie).join(Movie).filter(MovieRating.user_id == u_id).all()
+
+    return movies
+
+
+def get_user_comics(u_id):
+    """
+    """
+    comics = db.session.query(ComicRec, Comic).join(Comic).filter(ComicRec.user_id == u_id).all()
+
+    return comics
+
+
 def get_profile(u_id):
     """based on the user's movie ratings, calculate a preference profile.
     """
