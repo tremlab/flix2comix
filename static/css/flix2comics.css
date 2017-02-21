@@ -17,3 +17,8 @@
 body {
     font-family: sans-serif;
 }
+
+.highlight {
+    background-color: orange;
+    border: solid, 2px gray;
+}

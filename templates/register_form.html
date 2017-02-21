@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<div id="register">
 <form action="/register" method="POST">
     Email: <input type="text" name="email"><br>
-    ninckname: <input type="text" name="nickname"><br>
+    nickname: <input type="text" name="nickname"><br>
     Password: <input type="password" name="password"><br>
     Password again: <input type="password" name="password2"><br>
 
     <input type="submit">
 </form>
+</div>
 
 {% endblock %}
