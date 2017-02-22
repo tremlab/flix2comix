@@ -31,20 +31,20 @@
     </form>
 </div>
 
-    <p>Here are the comics wev'e suggested to you:</p>
+    <p>Here are the comics we've suggested to you:</p>
     <p>(Please rate any that you have read. We love feedback!!)
 
 <div class="comics">
-    <!-- send to different route... just rate movie, don't get comic -->
+
     <form action="/update_comic" method="post">
         {% for comic in comics %}
-            <img src=""><br>
+            <img src="http://covers.openlibrary.org/b/isbn/{{ comic[1].isbn10 }}-M.jpg"><br>
 
 
             <h2>{{ comic[1].title }}</h2><br>
             <!-- how to refer to RATING table info? -->
-            <p>Current rating: {{ comic[0].user_rating|default('not rated', true) }} <br>
-            change rating to:<select name="{{ comic.comic_id }}" id="{{ comic.comic_id }}">
+            <p>Current rating: {{ comic[0].user_rating + 3|default('not rated', true) }} <br>
+            change rating to:<select name="{{ comic[1].comic_id }}" id="{{ comic[1].comic_id }}">
                 <option value="0"></option>
                 <option value="1">1</option>
                 <option value="2">2</option>

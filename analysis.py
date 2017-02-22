@@ -16,11 +16,12 @@ def process_user_rating(u_id, mv, r):
                                                MovieRating.movie_id == mv).one()
         # update to new rating value given by user
         this_rating.rating = r
+        this_rating.rated_at = date.today()
         title = this_rating.movie.title
         update = "Updated your rating for %s" % (title)
         flash(update)
     except NoResultFound:
-        mrating = MovieRating(user_id=u_id, movie_id=mv, rating=r)
+        mrating = MovieRating(user_id=u_id, movie_id=mv, rating=r, rated_at=date.today())
         db.session.add(mrating)
 
     db.session.commit()
@@ -37,11 +38,14 @@ def process_comic_rating(u_id, cm, r):
                                                ComicRec.comic_id == cm).one()
         # update to new rating value given by user
         this_rating.user_rating = r
+        #not tracking the date of user rating, only date recommnded.
         title = this_rating.comic.title
+        print title
         update = "Updated your rating for %s" % (title)
         # flash(update)
+    #in current workflow, never rating a movie that wasn't reocmmended. 
     except NoResultFound:
-        c_rating = ComicRec(user_id=u_id, comic_id=cm, user_rating=r)
+        c_rating = ComicRec(user_id=u_id, comic_id=cm, user_rating=r, recd_at=date.today())
         db.session.add(c_rating)
 
     db.session.commit()
