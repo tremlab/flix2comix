@@ -8,12 +8,22 @@
 </head>
 
 <body>
-    <div id="banner"><img src="/static/images/tremlab.jpg"><h1>flix2comix</h1><h3>by tremlab</h3></div>
-    <ul>
-        {% for message in get_flashed_messages() %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
+    <div class="banner">
+      <img src="/static/images/tremlab.jpg">
+    </div>
+    <div class="banner">
+      <h1>flix2comix</h1>
+    </div>
+    <div class="banner">
+      <h3>by tremlab</h3>
+    </div>
+    <div class="flashMsg">
+      <ul>
+          {% for message in get_flashed_messages() %}
+              <li>{{ message }}</li>
+          {% endfor %}
+      </ul>
+    </div>
 
 {% block content %} 
         put your content here 
@@ -25,14 +35,32 @@
   <form action="/logout" method="get">
     <button type="submit" id="logout" value="Logout">Logout</button>
   </form>
+      <div class="movies">
+        <p>click below to start rating movies:</p>
+        <a href="/movies">
+          <img src="/static/images/movie_icon.png">
+        </a>
+      </div>
+      <div class="movies">
+        <p>click below to see your existing ratings:</p>
+        <a href="/user">
+          <img src="/static/images/user_info.png">
+        </a>
+      </div>
+
+
 {% else %}
-  <form action="/login" method="get">
-    <button type="submit" id="login">Login</button></a>
-  </form>
-  <form action="/register" method="get">
-    <button type="submit" id="register">Sign Up</button></a>
-  </form>
+<div id="notSignedIn">
+  <br>
+    <p>Please login/signup below to get started.</p>
+  <br>
+      <button type="submit" id="loginButton">Login</button>
+  <br>
+      <button type="submit" id="signUpButton">Sign Up</button>
+</div>
+
 {% endif %}
+
 <script src='/static/js/flix2comics.js'></script>
 </body>
 </html>

@@ -3,12 +3,11 @@
 
 <div id="register">
 <form action="/register" method="POST">
-    Email: <input type="text" name="email"><br>
+    Email: <input type="text" name="email" id="email"><span id="emailValid"></span><br>
     nickname: <input type="text" name="nickname"><br>
-    Password: <input type="password" name="password"><br>
-    Password again: <input type="password" name="password2"><br>
-
-    <input type="submit">
+    Password: <input type="password" name="password" id="password"><br>
+    Password again: <input type="password" name="password2" id="password2"><span id="passMatch"></span><br>
+    <input type="submit" id="registerButton" disabled>
 </form>
 </div>
 

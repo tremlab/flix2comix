@@ -11,13 +11,33 @@
     <p>If you don't mind taking a moment to rate a few movies, 
         we will be happy to find you an awesome little comic
         in your wheelhouse.</p>
-    <p>And don't worry - none of these are part one of an epic 50 year-long
+    <p>And don't worry - none of these are part 27 of an epic 50 year-long
         series where you need to know an elaborate backstory to understand what 
         the heck is going on. ;) We will offer a simple, self-contained 
         (award-winning! amazing!!!) graphic novel to try out.</p>
 
     <h3>Comics are for grownups too!</h3>
 
-    Please login/signup below to get started.
+    <div id="loginForm" class="hidden">
+        <form action="/login-validation" method="POST">
+            Email: <input type="text" name="email"><br>
+            Password: <input type="password" name="password"><br>
+            <input type="submit">
+        </form>
+        <br><button type="submit" id="cancelLogin">Cancel</button>
+    </div>
+
+    <div id="registerForm" class="hidden">
+        <form action="/register" method="POST">
+            Email: <input type="text" name="email" id="email">
+                <span id="emailValid"></span><br>
+            nickname: <input type="text" name="nickname"><br>
+            Password: <input type="password" name="password" id="password"><br>
+            Password again: <input type="password" name="password2" id="password2">
+                <span id="passMatch"></span><br>
+            <input type="submit" id="registerButton" disabled>
+        </form>
+        <br><button type="submit" id="cancelReg">Cancel</button>
+    </div>
 
 {% endblock %}

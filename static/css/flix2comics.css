@@ -2,16 +2,37 @@
     width: 120px;
 }
 
+.eachMovie {
+    display: inline-block;
+    width: 150;
+    height: 250;
+    margin: 1em;
+}
+
 .comics img {
     width: 120px;
 }
 
-#banner img {
+.banner img {
     width: 120px;
 }
 
-#banner {
+.banner h1 {
+    color: orange;
+}
+
+.banner h3 {
+    color: gray;
+}
+
+.banner {
     display: inline-block;
+    vertical-align: top;
+}
+
+.flashMsg {
+    color:orange;
+    font-weight: bold; 
 }
 
 body {
@@ -21,4 +42,8 @@ body {
 .highlight {
     background-color: orange;
     border: solid, 2px gray;
+}
+
+.hidden {
+    display: none;
 }
