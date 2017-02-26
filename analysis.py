@@ -3,6 +3,31 @@ from model import (User, Movie, Comic, MovieRating, ComicRec,
 from datetime import date
 from flask import flash
 from sqlalchemy.orm.exc import NoResultFound
+import random
+
+
+def get_random_movie(elimination_set):
+    """elimintating movies the user has already rated or seen,
+        randomly pick a movie fomr the db.
+    """
+    # list of all movie ids as tuples :)
+    all_movie_ids = db.session.query(Movie.movie_id).all()
+    avail_movies = []
+
+    for movie in all_movie_ids:
+        id = movie[0]  # getting raw id out of tuple
+
+        if id not in elimination_set:
+            avail_movies.append(id)
+
+    print "avail", avail_movies
+
+    choice_index = random.randint(0, len(avail_movies))
+    selected_movie_id = avail_movies[choice_index - 1]  # OB1
+    #get the full movie object from db
+    random_movie = Movie.query.get(selected_movie_id)
+
+    return random_movie
 
 
 def process_user_rating(u_id, mv, r):

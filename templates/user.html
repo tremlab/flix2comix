@@ -3,10 +3,28 @@
 
 {% block content %}
     <h1>Hello, {{ user.nickname|default("you", true) }}!</h1><br>
-    <div class="user_info">
-        email: {{ user.email }}
-        <!-- reset password?? -->
+    <div id="user_info">
+        <p>Your account info:</p>
+        email: {{ user.email }}<br>
+        nickname: {{ user.nickname }}
     </div>
+<!--         <br>
+      <button type="submit" id="editUserButton">Edit User
+      </button>
+        <br>
+    <div id="editUserForm" class="hidden">
+        <form action="/update_user" method="POST">
+            Email:<input type="text" placeholder="{{ user.email }}" name="email" id="email"><br> 
+            Nickname:<input type="text" placeholder="{{ user.nickname }}" name="nickname" id="nickname"><br>
+            <input type="submit">
+        </form>
+
+        <br>
+      <button type="submit" id="cancelEditUser">Cancel
+      </button>
+        <br>
+    </div> -->
+    
 
     <p>Here are the movies you've rated so far:</p>
 
@@ -16,7 +34,6 @@
         {% for movie in movies %}
             <img src="https://image.tmdb.org/t/p/w500{{ movie[1].image_src }}"><br>
             <h2>{{ movie[1].title }}</h2><br>
-            <!-- how to refer to RATING table info? -->
             Current rating: {{ movie[0].rating + 3 }}<br>
             change rating to:<select name="{{ movie.movie_id }}" id="{{ movie.movie_id }}">
                 <option value="0"></option>
@@ -43,7 +60,12 @@
 
             <h2>{{ comic[1].title }}</h2><br>
             <!-- how to refer to RATING table info? -->
-            <p>Current rating: {{ comic[0].user_rating + 3|default('not rated', true) }} <br>
+            <p>Current rating: {% if comic[0].user_rating %}
+                {{ comic[0].user_rating + 3 }} 
+                {% else %}
+                not yet rated
+                {% endif %}
+                <br>
             change rating to:<select name="{{ comic[1].comic_id }}" id="{{ comic[1].comic_id }}">
                 <option value="0"></option>
                 <option value="1">1</option>

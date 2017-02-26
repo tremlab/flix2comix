@@ -3,26 +3,14 @@
 
 {% block content %}
 
+<div id="intro">
 
-    <p>Please rate at least 5 movies (or as many as you want!)</p>
-<div class="movies">
-    <form action="/rate" method="post">
-        {% for movie in movies %}
-        <div class="eachMovie">
-            <img src="https://image.tmdb.org/t/p/w500{{ movie.image_src }}"><br>
-            {{ movie.title }}<br>
-            <select name="{{ movie.movie_id }}" id="{{ movie.movie_id }}">
-                <option value="0"></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select><br><br><br> 
-        </div>         
-        {% endfor %}<br>
-        <input type="submit">
-    </form>
+<p>Please rate at least 5 movies (or as many as you want!)</p>
+
+    <button type="submit" id="startButton">Start!</button>
+
 </div>
+
+    <div class="eachMovie" id="movieStars">{{ movie_html }}</div>
 
 {% endblock %}

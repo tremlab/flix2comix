@@ -1,23 +1,57 @@
 // flix2comix.js
 "use strict"
 
+
 document.addEventListener ("DOMContentLoaded", function() 
     {
-        $('input').on('focus', fHandleEnter);   // toggle?
-        $('input').on('blur', fHandleExit);
-        $('input').on('blur', fEnableSubmit);
+        $('#loginForm > input').on('focus', fHandleEnter);   // toggle?
+        $('#registerForm > input').on('focus', fHandleEnter);   // toggle?
+        $('#loginForm > input').on('blur', fHandleExit);
+        $('#registerForm > input').on('blur', fEnableSubmit);
 
         $('#signUpButton').on('click', fDisplayRegForm);
         $('#cancelReg').on('click', fHideRegForm);
         $('#loginButton').on('click', fDisplayLoginForm);
         $('#cancelLogin').on('click', fHideLoginForm);
+        $('#editUserButton').on('click', fDisplayUserForm);
+        $('#cancelEditUser').on('click', fHideUserForm);
 
         $('#email').on('blur', fValidateEmail);
         $('#password2').on('blur', fPasswordsMatch);
+
+        $('#startButton').on('click', fGetMovie);
+        $('#startButton').on('click', function () {$('#intro').hide()});
+
+        $('.monkey > p').on('click', function () {console.log('click star')});
+
+
     } // closes anon function
 ); // closes DOM event listener
 
 console.log("connected!!!!!!!");
+
+
+function fGetMovie(evt) {
+    $.get('/getMovie', fDisplayMovie);
+    console.log('click start');
+}
+
+function fDisplayMovie(results) {
+    $('#movieStars').html(results);
+}
+
+function fRateMovie(evt) {
+    console.log(this);
+
+    // var formInputs = {
+    //     "movie_id": $(this).data("movie"),
+    //     "rating": $(this).data("rating")
+    // };
+    // console.log(movie_id);
+
+    // $.post('/rate', formInputs, fDisplayMovie)
+
+}
 
 function fHandleEnter(evt) {
     $(this).addClass("highlight");
@@ -75,13 +109,25 @@ function fValidateEmail(evt) {
     }
 }
 
+function fDisplayUserForm(evt) {
+    $('#editUserForm').removeClass('hidden');
+    $('#editUserButton').hide();
+    console.log("clicky reg");
+}
+
+function fHideUserForm(evt) {
+    $('#editUserForm').addClass('hidden');
+    $('#editUserButton').show();
+    console.log("clicky cancel");
+}
+
 
 function fEnableSubmit(evt) {
     if (
         $('#email').val().length > 0 && 
         $('#password').val().length > 0 &&
-        //$('#emailValid').length == 0 &&
         $('#password').val() === $('#password2').val()
+        // confirm email ok?
     )
         {
         $('#registerButton').prop('disabled', false);

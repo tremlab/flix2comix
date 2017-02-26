@@ -3,7 +3,7 @@
 
 from jinja2 import StrictUndefined
 from flask import (Flask, jsonify, render_template,
-                   redirect, request, flash, session)
+                   redirect, request, flash, session, Markup)
 from flask_debugtoolbar import DebugToolbarExtension
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
@@ -49,12 +49,6 @@ def process_register_form():
         return redirect("/")
 
 
-# @app.route('/login', methods=["GET"])
-# def display_login_form():
-#     """show the login form for exisitng users
-#     """
-
-#     return render_template("login_form.html")
 
 
 @app.route('/login-validation', methods=["POST"])
@@ -91,30 +85,68 @@ def logout():
 def show_movies():
     """display the page in which user will rate movies.
     """
-    movie_list = Movie.get_randomized_movies()
-    return render_template("movies.html", movies=movie_list)
+    if 'movies_rated' not in session:
+        session['movies_rated'] = []
+    if 'movies_dismissed' not in session:
+        session['movies_dismissed'] = []
 
+    return render_template("movies.html")
 
-@app.route('/rate', methods=["POST"])
-def submit_movie_ratings():
-    """collect user's movie ratings, add info to database, send to comics page.
+#####
+@app.route('/getMovie')
+def getMovie():
+    """gets one movie object from db, checking that the user
+        has not already rated or dismissed it. Builds html
+        for the mini-form to display on the movie page, and returns HMTL.
     """
-    # must iterate through entire form, since we don't know how many repsonses.
+    # cast as set just in case duplicates appear. ????
+    seen_set = session['movies_dismissed'] #  + session['movies_rated']
+    random_movie = analysis.get_random_movie(seen_set)
+    movie_html = Markup(render_template('movie.html', movie=random_movie))
+    return movie_html
+
+@app.route('/rate', methods=['POST'])
+def submit_movie_rating():
+    """handle ajax call to process one movie.
+    """
+
     ratings = request.form
     u_id = session["user_id"]
 
+    # only one movie, but name/id is unknown
     for mv, r in ratings.items():
         #convert from string response
         mv = int(mv)
-        r = int(r)
-        # only for movies rated (not 0, which is default)
-        if r != 0:
-            # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
-            r = r - 3
-            # call function to handle each rating.
-            analysis.process_user_rating(u_id, mv, r)
+        r = int(r) - 3
+        # call function to handle each rating.
+        analysis.process_user_rating(u_id, mv, r)
 
-    return redirect("/comic")
+    # session[movie_sequence] += 1
+    # session[movies_rated] += 1
+
+
+
+# before Ajax:
+# @app.route('/rate', methods=["POST"])
+# def submit_movie_ratings():
+#     """collect user's movie ratings, add info to database, send to comics page.
+#     """
+#     # must iterate through entire form, since we don't know how many repsonses.
+#     ratings = request.form
+#     u_id = session["user_id"]
+
+#     for mv, r in ratings.items():
+#         #convert from string response
+#         mv = int(mv)
+#         r = int(r)
+#         # only for movies rated (not 0, which is default)
+#         if r != 0:
+#             # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
+#             r = r - 3
+#             # call function to handle each rating.
+#             analysis.process_user_rating(u_id, mv, r)
+
+#     return redirect("/comic")
 
 
 @app.route('/update_rate', methods=["POST"])
@@ -162,6 +194,28 @@ def update_comic_ratings():
 
     return redirect("/user")
 
+@app.route('/update_user', methods=["POST"])
+def update_user():
+    """collect user's changes, update database, refresh page
+    """
+    ##############DRY??? refactor into rate??#######
+    # must iterate through entire form, since we don't know how many repsonses.
+    user_info = request.form
+    u_id = session["user_id"]
+
+    # for cm, r in ratings.items():
+    #     #convert from string response
+    #     cm = int(cm)
+    #     r = int(r)
+    #     # only for movies rated (not 0, which is default)
+    #     if r != 0:
+    #         # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
+    #         r = r - 3
+    #         # call function to handle each rating.
+    #         analysis.process_comic_rating(u_id, cm, r)
+
+    return redirect("/user")
+
 ############# method post???
 @app.route('/comic', methods=["POST", "GET"])
 def show_comic():
@@ -172,7 +226,16 @@ def show_comic():
     """
     # handle if no user_id??
     u_id = session["user_id"]
-    recommended_comic = analysis.get_comic_rec(u_id)
+
+    try:
+        recommended_comic = analysis.get_comic_rec(u_id)
+        return render_template("comics.html", comic=recommended_comic)
+    except:
+        # if no more comics to recommend :)
+        flash("Young grasshopper, you have learned all I can teach you.")
+        return redirect("/user")
+
+
 
     return render_template("comics.html", comic=recommended_comic)
 
@@ -217,3 +280,11 @@ if __name__ == '__main__':
 # def display_register_form():
 
 #     return render_template("register_form.html")
+
+
+# @app.route('/login', methods=["GET"])
+# def display_login_form():
+#     """show the login form for exisitng users
+#     """
+
+#     return render_template("login_form.html")
