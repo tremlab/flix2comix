@@ -4,10 +4,10 @@
 
 document.addEventListener ("DOMContentLoaded", function() 
     {
-        $('#loginForm > input').on('focus', fHandleEnter);   // toggle?
-        $('#registerForm > input').on('focus', fHandleEnter);   // toggle?
-        $('#loginForm > input').on('blur', fHandleExit);
-        $('#registerForm > input').on('blur', fEnableSubmit);
+        $('#loginForm input').on('focus', fHandleEnter);   // toggle?
+        $('#registerForm input').on('focus', fHandleEnter);   // toggle?
+        $('#loginForm input').on('blur', fHandleExit);
+        $('#registerForm input').on('blur', fEnableSubmit);
 
         $('#signUpButton').on('click', fDisplayRegForm);
         $('#cancelReg').on('click', fHideRegForm);
@@ -22,8 +22,6 @@ document.addEventListener ("DOMContentLoaded", function()
         $('#startButton').on('click', fGetMovie);
         $('#startButton').on('click', function () {$('#intro').hide()});
 
-        $('.monkey > p').on('click', function () {console.log('click star')});
-
 
     } // closes anon function
 ); // closes DOM event listener
@@ -33,24 +31,32 @@ console.log("connected!!!!!!!");
 
 function fGetMovie(evt) {
     $.get('/getMovie', fDisplayMovie);
-    console.log('click start');
+    console.log('click start button');
 }
 
 function fDisplayMovie(results) {
+    $.get('/rateCount', fMovieCounter);
     $('#movieStars').html(results);
+    $('input[type=radio]').on('click', fRateMovie);
+}
+
+function fMovieCounter(results) {
+    $('#movieCounter').html(results);
+    if (parseInt(results) > 5) {
+        $('#getBookButton').prop('disabled', false);
+    }
 }
 
 function fRateMovie(evt) {
     console.log(this);
 
-    // var formInputs = {
-    //     "movie_id": $(this).data("movie"),
-    //     "rating": $(this).data("rating")
-    // };
-    // console.log(movie_id);
+    var formInputs = {
+        "movie_id": $(this).data("movie"),
+        "rating": $(this).data("rating")
+    };
+    console.log(formInputs['movie_id']);
 
-    // $.post('/rate', formInputs, fDisplayMovie)
-
+    $.post('/rate', formInputs, fDisplayMovie)
 }
 
 function fHandleEnter(evt) {
@@ -135,8 +141,3 @@ function fEnableSubmit(evt) {
 
 }
 
-// function isNotEmpty(inputElm, errMsg, errElm) {
-//    var isValid = (inputElm.val().trim() !== "");
-//    postValidate(isValid, errMsg, errElm, inputElm);
-//    return isValid;
-// }

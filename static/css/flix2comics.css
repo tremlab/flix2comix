@@ -1,11 +1,13 @@
-
-
 .movie {
   text-align: center;
 }
 
 .movie img {
     width: 200px;
+}
+
+.buttons img {
+    width: 100px;
 }
 
 .eachMovie {

@@ -67,6 +67,7 @@ def process_login_form():
     # if user found, check if password matches
     if password == user_check.password:
         session['user_id'] = user_check.user_id
+        session['movies_dismissed'] = []
         flash("Logged in successfully")
         return redirect("/")
     else:
@@ -77,6 +78,7 @@ def process_login_form():
 @app.route('/logout')
 def logout():
     del session['user_id']
+    del session['movies_dismissed']
     flash("Logged out successfully")
     return redirect("/")
 
@@ -85,68 +87,56 @@ def logout():
 def show_movies():
     """display the page in which user will rate movies.
     """
-    if 'movies_rated' not in session:
-        session['movies_rated'] = []
-    if 'movies_dismissed' not in session:
-        session['movies_dismissed'] = []
-
     return render_template("movies.html")
 
-#####
+
 @app.route('/getMovie')
 def getMovie():
     """gets one movie object from db, checking that the user
         has not already rated or dismissed it. Builds html
         for the mini-form to display on the movie page, and returns HMTL.
     """
-    # cast as set just in case duplicates appear. ????
-    seen_set = session['movies_dismissed'] #  + session['movies_rated']
-    random_movie = analysis.get_random_movie(seen_set)
-    movie_html = Markup(render_template('movie.html', movie=random_movie))
-    return movie_html
+    seen_list = session['movies_dismissed']
+    u_id = session['user_id']
+    random_movie = analysis.get_random_movie(seen_list, u_id)
+    if random_movie:
+        movie_html = Markup(render_template('movie.html', movie=random_movie))
+        return movie_html
+    else:
+        no_more_html = Markup(render_template('no_more.html'))
+        return no_more_html
+
 
 @app.route('/rate', methods=['POST'])
 def submit_movie_rating():
     """handle ajax call to process one movie.
     """
 
-    ratings = request.form
+    movie_id = int(request.form.get("movie_id"))
+    rating = int(request.form.get("rating"))
     u_id = session["user_id"]
 
-    # only one movie, but name/id is unknown
-    for mv, r in ratings.items():
-        #convert from string response
-        mv = int(mv)
-        r = int(r) - 3
-        # call function to handle each rating.
-        analysis.process_user_rating(u_id, mv, r)
+    analysis.process_user_rating(u_id, movie_id, rating)
 
-    # session[movie_sequence] += 1
-    # session[movies_rated] += 1
+    return redirect('/getMovie')
 
 
+@app.route('/skipMovie', methods=['POST'])
+def skip_movie():
+    session['movies_dismissed'].append(movie_id)
+    return redirect('/getMovie')
 
-# before Ajax:
-# @app.route('/rate', methods=["POST"])
-# def submit_movie_ratings():
-#     """collect user's movie ratings, add info to database, send to comics page.
-#     """
-#     # must iterate through entire form, since we don't know how many repsonses.
-#     ratings = request.form
-#     u_id = session["user_id"]
 
-#     for mv, r in ratings.items():
-#         #convert from string response
-#         mv = int(mv)
-#         r = int(r)
-#         # only for movies rated (not 0, which is default)
-#         if r != 0:
-#             # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
-#             r = r - 3
-#             # call function to handle each rating.
-#             analysis.process_user_rating(u_id, mv, r)
+@app.route('/rateCount')
+def getMovieCount():
+    """form user_id, get the number of movies this user has rated so far in their history.
+    """
+    u_id = session["user_id"] 
+    # build separate function to reduce server activity? sending entire object.
+    movies = analysis.get_user_movies(u_id)
+    count = len(movies)
 
-#     return redirect("/comic")
+    return str(count)
 
 
 @app.route('/update_rate', methods=["POST"])
@@ -288,3 +278,25 @@ if __name__ == '__main__':
 #     """
 
 #     return render_template("login_form.html")
+
+# before Ajax:
+# @app.route('/rate', methods=["POST"])
+# def submit_movie_ratings():
+#     """collect user's movie ratings, add info to database, send to comics page.
+#     """
+#     # must iterate through entire form, since we don't know how many repsonses.
+#     ratings = request.form
+#     u_id = session["user_id"]
+
+#     for mv, r in ratings.items():
+#         #convert from string response
+#         mv = int(mv)
+#         r = int(r)
+#         # only for movies rated (not 0, which is default)
+#         if r != 0:
+#             # recalibrating 1:5 stars, into -2:2 -- algorithm more accurate.
+#             r = r - 3
+#             # call function to handle each rating.
+#             analysis.process_user_rating(u_id, mv, r)
+
+#     return redirect("/comic")

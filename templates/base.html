@@ -5,6 +5,7 @@
   <script src="http://code.jquery.com/jquery.js"></script>
 
   <title>{%block title %} {% endblock %}</title>
+
 </head>
 
 <body>
@@ -29,39 +30,54 @@
         put your content here 
 {% endblock %}
 
-{% if "user_id" in session %}
-  <br>
-  <br>
-  <form action="/logout" method="get">
-    <button type="submit" id="logout" value="Logout">Logout</button>
-  </form>
-      <div class="movies">
-        <p>click below to start rating movies:</p>
-        <a href="/movies">
-          <img src="/static/images/movie_icon.png">
-        </a>
-      </div>
-      <div class="movies">
-        <p>click below to see your existing ratings:</p>
-        <a href="/user">
-          <img src="/static/images/user_info.png">
-        </a>
-      </div>
+  {% if "user_id" in session %}
+    <br>
+    <br>
+
+    <form action="/logout" method="get">
+      <button type="submit" id="logout" value="Logout">Logout</button>
+    </form>
+
+    <div class="buttons">
+      <p>click below to start rating movies:</p>
+      <a href="/movies">
+        <img src="/static/images/movie_icon.png">
+      </a>
+    </div>
+    <div class="buttons">
+      <p>click below to see your existing ratings:</p>
+      <a href="/user">
+        <img src="/static/images/user_info.png">
+      </a>
+    </div>
 
 
-{% else %}
-<div id="notSignedIn">
-  <br>
-    <p>Please login/signup below to get started.</p>
-  <br>
-      <button type="submit" id="loginButton">Login</button>
-  <br>
-      <button type="submit" id="signUpButton">Sign Up</button>
-</div>
+  {% else %}
+    <div id="notSignedIn">
+      <br>
+        <p>Please login/signup below to get started.</p>
+      <br>
+          <button type="submit" id="loginButton">Login</button>
+      <br>
+          <button type="submit" id="signUpButton">Sign Up</button>
+    </div>
+  {% endif %}
 
-{% endif %}
+  <script src='/static/js/flix2comics.js'></script>
 
-<script src='/static/js/flix2comics.js'></script>
+  <footer>
+    <h2>Special Thanks to:</h2>
+    <img src="/static/images/cam.png"><img src="/static/images/HB.png">
+
+    <p>This product uses the TMDb API but is not endorsed or certified by TMDb.
+    </p>
+    <img src="/static/images/tmdb.png">
+    <p>This product uses the ISBNdb API but is not endorsed or certified by ISBNdb.</p>
+    <p>This product uses the bechdeltest API but is not endorsed or certified by bechdeltest.</p>
+
+
+  </footer>
+
 </body>
 </html>
 
@@ -71,7 +87,4 @@
 
 
 
-<!-- for book covers: -->
 
-<!-- https://openlibrary.org/dev/docs/api/covers -->
-<!-- http://images.amazon.com/images/P/PASTE_ISBN_NUMBER_HERE.01.20TRZZZZ.jpg -->

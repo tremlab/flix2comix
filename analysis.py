@@ -6,24 +6,48 @@ from sqlalchemy.orm.exc import NoResultFound
 import random
 
 
-def get_random_movie(elimination_set):
-    """elimintating movies the user has already rated or seen,
-        randomly pick a movie fomr the db.
+def get_random_movie(elimination_list, u_id):
+    """takes in a list of movie_ids user has seen (from session),
+        also checks for movies already rated (from db), then
+        randomly picks a NEW movie for the user. -- returns movie object.
     """
-    # list of all movie ids as tuples :)
-    all_movie_ids = db.session.query(Movie.movie_id).all()
+    # list of all movie ids.
+    all_movies = db.session.query(Movie.movie_id).all()
+    all_movie_ids = []
+    for movie in all_movies:
+        all_movie_ids.append(movie[0])  # getting raw id out of tuple
+
+    # list of movie_ids that were rated by this user
+    movies_rated_objs = get_user_movies(u_id)
+    movies_rated_ids = []
+    for movie in movies_rated_objs:
+        print movie
+        movies_rated_ids.append(movie[1].movie_id)
+    print "movies rated:", movies_rated_ids
+    # elimination_list -- ids of movies user has SEEN but not RATED.
+
     avail_movies = []
 
     for movie in all_movie_ids:
-        id = movie[0]  # getting raw id out of tuple
+        if movie not in elimination_list + movies_rated_ids:
+            avail_movies.append(movie)
+    print "movies not seen, not rated:", avail_movies
+    # if user has seen & rated all the movies,
+    # go back to seen, but unrated movies
+    if avail_movies == []:
+        for movie in all_movie_ids:
+            if movie not in movies_rated_ids:
+                avail_movies.append(movie)
+    print "movies seen, but not rated", avail_movies
+    #if user has rated all movies, return None
+    if avail_movies == []:
+        return None
 
-        if id not in elimination_set:
-            avail_movies.append(id)
-
-    print "avail", avail_movies
-
+    print "avaialable movies:", avail_movies
     choice_index = random.randint(0, len(avail_movies))
+    print "choice_index", choice_index
     selected_movie_id = avail_movies[choice_index - 1]  # OB1
+    print "movie_id", selected_movie_id
     #get the full movie object from db
     random_movie = Movie.query.get(selected_movie_id)
 
@@ -36,7 +60,6 @@ def process_user_rating(u_id, mv, r):
     """
     try:
         # check if this user/movie combo already has a record in the db.
-        ############ enforce uniqueness on mock data :(
         this_rating = MovieRating.query.filter(MovieRating.user_id == u_id,
                                                MovieRating.movie_id == mv).one()
         # update to new rating value given by user
@@ -80,14 +103,14 @@ def get_user_movies(u_id):
     """find all movies this user (by user_id) has rated.
         returns list of movie objects.
     """
-    ###test
     movies = db.session.query(MovieRating, Movie).join(Movie).filter(MovieRating.user_id == u_id).all()
 
     return movies
 
 
 def get_user_comics(u_id):
-    """
+    """find all comics that have been recommended to this user so far.
+        return list of comic objects.
     """
     comics = db.session.query(ComicRec, Comic).join(Comic).filter(ComicRec.user_id == u_id).all()
 
