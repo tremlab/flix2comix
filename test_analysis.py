@@ -16,21 +16,22 @@ class flix2comixTest(unittest.TestCase):
         """
         """
         profile3 = analysis.get_profile(3)
-        assertEqual(profile3["linear"], -1)
-        assertEqual(profile3["mature"], 0)
+        self.assertEqual(profile3["linear"], -1)
+        self.assertEqual(profile3["mature"], 0)
 
     def test_get_user_match3(self):
         """
         """
-        comic = analysis.test_get_user_match(3)
-        assertEqual(comic.title, "Why I Hate Saturn")
+        profile3 = analysis.get_profile(3)
+        comic = analysis.get_user_match(profile3, 3)
+        self.assertEqual(comic.title, "Why I Hate Saturn")
 
     # def test_process_user_rating(self):
     #     """
     #     """
     #     analysis.process_user_rating(10, 10, 2)
     #     r = MovieRating.query.filter(user_id=10, movie_id=10).one()
-   
+
     #     assertEqual(r.rating, 2)
 
     def setUp(self):
@@ -38,11 +39,12 @@ class flix2comixTest(unittest.TestCase):
         # Connect to test database
 
         # Create tables and add sample data
+        # os.system("dropdb testdb")
         os.system("createdb testdb")
         os.system("psql testdb < BACKUPflix2comix")
 
         connect_to_db(app, "postgresql:///testdb")
-
+        print "connected to testdb"
 
     def tearDown(self):
         """Do at end of every test."""
@@ -54,8 +56,8 @@ class flix2comixTest(unittest.TestCase):
 if __name__ == '__main__':
 
     from server import app
-    connect_to_db(app, "MOCKflix2comix")
-    print "Connected to DB!"
+    # connect_to_db(app, "MOCKflix2comix")
+    # print "Connected to DB!"
 
     unittest.main()
 
