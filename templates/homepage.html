@@ -18,6 +18,13 @@
 
     <h3>Comics are for grownups too!</h3>
 
+    {% if "user_id" in session %}
+    <p>click below to start rating movies:</p>
+      <a href="/movies">
+        <img src="/static/images/movie_icon.png"></a>
+    {% endif %}
+    <br>
+
     <div id="loginForm" class="hidden">
         <form action="/login-validation" method="POST">
             Email: <input type="text" name="email"><br>

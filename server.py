@@ -22,7 +22,6 @@ app.jinja_env.endefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-
     return render_template("homepage.html")
 
 
@@ -45,6 +44,7 @@ def process_register_form():
         db.session.commit()
 
         session['user_id'] = user.user_id
+        session['movies_dismissed'] = []
         flash("You are registered & logged in.")
         return redirect("/")
 
@@ -100,6 +100,7 @@ def getMovie():
     u_id = session['user_id']
     random_movie = analysis.get_random_movie(seen_list, u_id)
     if random_movie:
+        session['movies_dismissed'].append(random_movie.movie_id)
         movie_html = Markup(render_template('movie.html', movie=random_movie))
         return movie_html
     else:
@@ -113,7 +114,7 @@ def submit_movie_rating():
     """
 
     movie_id = int(request.form.get("movie_id"))
-    rating = int(request.form.get("rating"))
+    rating = int(request.form.get("rating")) - 3
     u_id = session["user_id"]
 
     analysis.process_user_rating(u_id, movie_id, rating)
@@ -123,6 +124,7 @@ def submit_movie_rating():
 
 @app.route('/skipMovie', methods=['POST'])
 def skip_movie():
+    movie_id = int(request.form.get("movie_id"))
     session['movies_dismissed'].append(movie_id)
     return redirect('/getMovie')
 

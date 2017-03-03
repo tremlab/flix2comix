@@ -33,23 +33,22 @@
   {% if "user_id" in session %}
     <br>
     <br>
-
-    <form action="/logout" method="get">
-      <button type="submit" id="logout" value="Logout">Logout</button>
-    </form>
-
     <div class="buttons">
-      <p>click below to start rating movies:</p>
       <a href="/movies">
-        <img src="/static/images/movie_icon.png">
+        <button>Rate Movies</button>
       </a>
     </div>
     <div class="buttons">
-      <p>click below to see your existing ratings:</p>
       <a href="/user">
-        <img src="/static/images/user_info.png">
+        <button>My Info</button>
       </a>
     </div>
+    <div class="buttons">
+      <form action="/logout" method="get">
+      <button type="submit" id="logout" value="Logout">Logout</button>
+      </form>
+    </div>
+
 
 
   {% else %}
@@ -68,10 +67,10 @@
   <footer>
     <h2>Special Thanks to:</h2>
     <img src="/static/images/cam.png"><img src="/static/images/HB.png">
-
+    <br>
+    <img src="/static/images/tmdb.png">
     <p>This product uses the TMDb API but is not endorsed or certified by TMDb.
     </p>
-    <img src="/static/images/tmdb.png">
     <p>This product uses the ISBNdb API but is not endorsed or certified by ISBNdb.</p>
     <p>This product uses the bechdeltest API but is not endorsed or certified by bechdeltest.</p>
 

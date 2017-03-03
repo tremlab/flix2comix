@@ -26,39 +26,16 @@
     </div> -->
     
 
-    <p>Here are the movies you've rated so far:</p>
-
-<div class="movies">
-    <!-- send to different route... just rate movie, don't get comic -->
-    <form action="/update_rate" method="post">
-        {% for movie in movies %}
-            <img src="https://image.tmdb.org/t/p/w500{{ movie[1].image_src }}"><br>
-            <h2>{{ movie[1].title }}</h2><br>
-            Current rating: {{ movie[0].rating + 3 }}<br>
-            change rating to:<select name="{{ movie.movie_id }}" id="{{ movie.movie_id }}">
-                <option value="0"></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select><br><br><br>          
-        {% endfor %}
-        <input type="submit">
-    </form>
-</div>
-
-    <p>Here are the comics we've suggested to you:</p>
-    <p>(Please rate any that you have read. We love feedback!!)
-
+<div class='userContent'>
 <div class="comics">
-
+    <h3>Here are the comics we've suggested to you:</h3>
+    <p>(Please rate any that you have read. We love feedback!!)
     <form action="/update_comic" method="post">
         {% for comic in comics %}
             <img src="http://covers.openlibrary.org/b/isbn/{{ comic[1].isbn10 }}-M.jpg"><br>
 
 
-            <h2>{{ comic[1].title }}</h2><br>
+            <h2>{{ comic[1].title }}</h2>
             <!-- how to refer to RATING table info? -->
             <p>Current rating: {% if comic[0].user_rating %}
                 {{ comic[0].user_rating + 3 }} 
@@ -77,6 +54,17 @@
         {% endfor %}
         <input type="submit">
     </form>
+</div>
+</div>
+
+<div class='userContent'>
+    <div class="movie">
+        <h3>Here are the movies you've rated so far:</h3>
+            {% for movie in movies %}
+                <h2>{{ movie[1].title }}</h2><br>
+                <img src="https://image.tmdb.org/t/p/w500{{ movie[1].image_src }}"><br>  
+            {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

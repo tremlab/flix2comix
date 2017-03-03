@@ -5,6 +5,7 @@
 
 import analysis
 import unittest
+import os
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
 
@@ -35,17 +36,20 @@ class flix2comixTest(unittest.TestCase):
     def setUp(self):
         """connect to db? createdb???"""
         # Connect to test database
-        # connect_to_db(app, "postgresql:///testdb")
 
         # Create tables and add sample data
-        db.create_all()
-        # example_data()
+        os.system("createdb testdb")
+        os.system("psql testdb < BACKUPflix2comix")
+
+        connect_to_db(app, "postgresql:///testdb")
+
 
     def tearDown(self):
         """Do at end of every test."""
 
         db.session.close()
-        db.drop_all()
+        os.system("dropdb testdb")
+
 
 if __name__ == '__main__':
 

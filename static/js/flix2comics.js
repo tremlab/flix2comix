@@ -6,6 +6,7 @@ document.addEventListener ("DOMContentLoaded", function()
     {
         $('#loginForm input').on('focus', fHandleEnter);   // toggle?
         $('#registerForm input').on('focus', fHandleEnter);   // toggle?
+        $('#registerForm input').on('blur', fHandleExit);   // toggle?
         $('#loginForm input').on('blur', fHandleExit);
         $('#registerForm input').on('blur', fEnableSubmit);
 
@@ -21,6 +22,8 @@ document.addEventListener ("DOMContentLoaded", function()
 
         $('#startButton').on('click', fGetMovie);
         $('#startButton').on('click', function () {$('#intro').hide()});
+        // needs to be dynamic for movie/comic
+        // $('input[type=radio]').on('click', fRateMovie);
 
 
     } // closes anon function
@@ -31,13 +34,18 @@ console.log("connected!!!!!!!");
 
 function fGetMovie(evt) {
     $.get('/getMovie', fDisplayMovie);
-    console.log('click start button');
+}
+
+function fSkipMovie(evt) {
+    var movie = {"movie_id": $(this).data('movie')};
+    $.post('/skipMovie', movie, fDisplayMovie);
 }
 
 function fDisplayMovie(results) {
     $.get('/rateCount', fMovieCounter);
     $('#movieStars').html(results);
     $('input[type=radio]').on('click', fRateMovie);
+    $('#skip').on('click', fSkipMovie);
 }
 
 function fMovieCounter(results) {

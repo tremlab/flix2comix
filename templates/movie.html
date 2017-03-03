@@ -1,6 +1,9 @@
 
 <div class="movie">
-    <h2>{{ movie.title }}</h2>
+    
+    <br>
+    <br>
+    <h1>{{ movie.title }}</h1>
     <img src="https://image.tmdb.org/t/p/w500{{ movie.image_src }}"><br>
     <fieldset class="rating {{ movie.movie_id }}">
         <input type="radio" id="{{ movie.movie_id }}5" name="rating" data-movie="{{ movie.movie_id }}"data-rating="5" />
@@ -9,10 +12,17 @@
             <label for="{{ movie.movie_id }}4" title="Pretty good"><span>&#9733</span></label>
         <input type="radio" id="{{ movie.movie_id }}3" name="rating" data-movie="{{ movie.movie_id }}"data-rating="3" />
             <label for="{{ movie.movie_id }}3" title="Meh"><span>&#9733</span></label>
-        <input type="radio" id="{{ movie.movie_id }}2" name="rating" data-movie="{{ movie.movie_id }}"data-rating="2" />
+        <input type="radio" id="{{ movie.movie_id }}2" name="rating" data-movie="{{ movie.movie_id }}" data-rating="2" />
             <label for="{{ movie.movie_id }}2" title="Kinda bad"><span>&#9733</span></label>
         <input type="radio" id="{{ movie.movie_id }}1" name="rating" data-movie="{{ movie.movie_id }}"data-rating="1" />
             <label for="{{ movie.movie_id }}1" title="Sucks big time"><span>&#9733</span></label>
-    </fieldset>
+    </fieldset><br>
+    <br>
+    <br>
+    <p></p>
+    <button type='submit' id='skip' data-movie='{{ movie.movie_id }}'>skip this movie</button>
+    <br>
+    <br>
+    <br>
+    <h3>Movies rated: <span id="movieCounter">(need more than 5 to continue)</span></h3>
 </div>
-<br> <br>
