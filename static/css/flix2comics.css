@@ -1,25 +1,32 @@
 .movie {
   text-align: center;
   margin: auto;
+  border: solid 6px orange;
+  margin: 20px;
+  padding: 5px;
+  height: 620px;
+  width:400px;
+  font-family: 'Acme', sans-serif;
 }
 
 .movie img {
-    width: 200px;
+  width: 200px;
 }
 
 .eachMovie {
-    display: inline-block;
-    width: 150;
-    height: 250;
-    margin: auto;
-    width: 50%;
+  display: inline-block;
+  width: 150;
+  height: 250;
+  margin: auto;
+  width: 50%;
 }
 
 #intro {
-    border: solid 6px orange;
-    margin: 20px;
-    padding: 5px;
-    text-align: center;
+  border: solid 6px orange;
+  margin: 20px;
+  padding: 5px;
+  text-align: center;
+  font-family: 'Acme', sans-serif;
 }
 
 #intro img {
@@ -27,24 +34,43 @@
 }
 
 .comics img {
-    width: 120px;
+  width: 120px;
+}
+
+.comicPage img {
+  height: 300px;
 }
 
 .banner img {
-    width: 100px;
+  width: 100px;
 }
 
 .banner h1 {
-    color: orange;
+  color: orange;
+  font-family: 'Catamaran', sans-serif;
 }
 
 .banner h3 {
-    color: gray;
+  color: gray;
+  font-family: 'Catamaran', sans-serif;
 }
 
 .banner {
   display: inline-block;
   vertical-align: top;
+  height: 200px;
+  background-color: white;
+
+}
+
+#registerForm {
+  text-align: left;
+  width: 400px;
+}
+
+#registerForm input {
+  float: right;
+  width: 400px;
 }
 
 .buttons {
@@ -56,13 +82,36 @@
   width: 120px;
 }
 
+.buttons a {
+  color: black;
+}
+
+button:disabled {
+  color: gray;
+}
+
+input:disabled {
+  color: gray;
+}
+
+
 .flashMsg {
   color:orange;
   font-weight: bold; 
 }
 
 body {
-    font-family: sans-serif;
+  font-family: 'Catamaran', sans-serif;
+
+    /*background-image: url("/static/images/paper.png");*/
+}
+
+h1, h2, h3 {
+    font-family: 'Acme', sans-serif;
+}
+
+h2 {
+  color: orange;
 }
 
 .highlight {
@@ -74,19 +123,25 @@ body {
     display: none;
 }
 
-.userContent {
-  display: inline-block;
-  vertical-align: top;
+#userInfo {
+    border: solid 6px orange;
+    margin: 20px;
+    padding: 5px;
 }
 
 footer img {
-  width: 120px;
+  height: 50px;
+}
+
+footer p {
+  font-size: 60%;
 }
 
 /*below for star ratings*/
 
 .rating {
-  float:left;
+  float: left;
+  margin-left: 110px;
 }
 
 .rating:not(:checked) > input {

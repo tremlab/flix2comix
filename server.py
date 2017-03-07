@@ -46,7 +46,7 @@ def process_register_form():
         session['user_id'] = user.user_id
         session['movies_dismissed'] = []
         flash("You are registered & logged in.")
-        return redirect("/")
+        return redirect("/movies")
 
 
 
@@ -259,7 +259,7 @@ if __name__ == '__main__':
     connect_to_db(app)
 
     #use debug toolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     app.run(port=5000, host='0.0.0.0')
 

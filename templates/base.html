@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
 <head>
+  <link href="https://fonts.googleapis.com/css?family=Acme|Catamaran" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href='/static/css/flix2comics.css' rel="stylesheet" type="text/css">
   <script src="http://code.jquery.com/jquery.js"></script>
 
@@ -9,74 +11,86 @@
 </head>
 
 <body>
-    <div class="banner">
-      <img src="/static/images/tremlab.jpg">
+  <div class="row">
+  <div class="container-fluid">
+      <div class="banner">
+        <img src="/static/images/tremlab.jpg">
+      </div>
+      <div class="banner">
+        <h1>flix2comix</h1>
+      </div>
+      <div class="banner">
+        <h3>by tremlab</h3>
+      </div>
+      <div class="flashMsg">
+        <ul>
+            {% for message in get_flashed_messages() %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+      </div>
     </div>
-    <div class="banner">
-      <h1>flix2comix</h1>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-1">
     </div>
-    <div class="banner">
-      <h3>by tremlab</h3>
-    </div>
-    <div class="flashMsg">
-      <ul>
-          {% for message in get_flashed_messages() %}
-              <li>{{ message }}</li>
-          {% endfor %}
-      </ul>
+    <div class="col-xs-12 col-md-10">
+    {% block content %} 
+            put your content here 
+    {% endblock %}
+
+      {% if "user_id" in session %}
+        <br>
+        <br>
+        <div class="buttons">
+          <a href="/movies">
+            <button>Rate Movies</button>
+          </a>
+        </div>
+        <div class="buttons">
+          <a href="/user">
+            <button>My Info</button>
+          </a>
+        </div>
+        <div class="buttons">
+          <form action="/logout" method="get">
+          <button type="submit" id="logout" value="Logout">Logout</button>
+          </form>
+        </div>
+      </div>
+      <div class="col-xs-12 col-md-1">
+      </div>
     </div>
 
-{% block content %} 
-        put your content here 
-{% endblock %}
 
-  {% if "user_id" in session %}
-    <br>
-    <br>
-    <div class="buttons">
-      <a href="/movies">
-        <button>Rate Movies</button>
-      </a>
+
+      {% else %}
+        <div id="notSignedIn">
+          <br>
+            <p>Please login/signup below to get started.</p>
+          <br>
+              <button type="submit" id="loginButton">Login</button>
+          <br>
+              <button type="submit" id="signUpButton">Sign Up</button>
+        </div>
+      {% endif %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-offset-3">
+        <footer>
+          <h2>Special Thanks to:</h2>
+          <img src="/static/images/cam.png"><img src="/static/images/HB.png"><img src="/static/images/tmdb.png">
+          <br>
+          <p>This product uses the TMDb API but is not endorsed or certified by TMDb.
+          <br>This product uses the ISBNdb API but is not endorsed or certified by ISBNdb.
+          <br>This product uses the bechdeltest API but is not endorsed or certified by bechdeltest.</p>
+        </footer>
+      </div>
     </div>
-    <div class="buttons">
-      <a href="/user">
-        <button>My Info</button>
-      </a>
-    </div>
-    <div class="buttons">
-      <form action="/logout" method="get">
-      <button type="submit" id="logout" value="Logout">Logout</button>
-      </form>
-    </div>
-
-
-
-  {% else %}
-    <div id="notSignedIn">
-      <br>
-        <p>Please login/signup below to get started.</p>
-      <br>
-          <button type="submit" id="loginButton">Login</button>
-      <br>
-          <button type="submit" id="signUpButton">Sign Up</button>
-    </div>
-  {% endif %}
-
+  </div>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src='/static/js/flix2comics.js'></script>
-
-  <footer>
-    <h2>Special Thanks to:</h2>
-    <img src="/static/images/cam.png"><img src="/static/images/HB.png">
-    <br>
-    <img src="/static/images/tmdb.png">
-    <p>This product uses the TMDb API but is not endorsed or certified by TMDb.
-    </p>
-    <p>This product uses the ISBNdb API but is not endorsed or certified by ISBNdb.</p>
-    <p>This product uses the bechdeltest API but is not endorsed or certified by bechdeltest.</p>
-
-
-  </footer>
-
 </body>
 </html>
 

@@ -1,15 +1,31 @@
 {% extends 'base.html' %}
 {% block title %}flix2comix -  Movies{% endblock %}
 {% block content %}
-<div id="intro">
-<p>Please rate at least 5 movies<br><em>(or as many as you want!)</em></p>
-<img src="/static/images/theater.jpg">
-<br>
-    <button type="submit" id="startButton">Start!</button>
+<div class="row">
+    <div class="col-xs-12 col-md-3">
+    </div>
+    <div class="col-xs-12 col-md-6">
+        <div id="intro">
+        <h2>Please rate at least 5 movies</h2>
+        <br>
+        <p><em>(or as many as you want!)</em>
+            <br> </p>
+        <img src="/static/images/theater.jpg">
+        <br>
+            <button type="submit" id="startButton">Start!</button>
 
+        </div>
+        <div class="eachMovie" id="movieStars">{{ movie_html }}</div>
+            <form action='/comic' method='get'>
+                <button type="submit" id="getBookButton" disabled>Find my comic!</button>
+            </form>
+            <br>
+        <span id="progressBar">
+            <progress id="bar" max="5" value="0">rate at least 5 movies to get your comic.</progress>
+            <p>rate at least 5 movies to get your comic.</p>
+        </span>
+    </div>
+    <div class="col-xs-12 col-md-3">
+    </div>
 </div>
-<div class="eachMovie" id="movieStars">{{ movie_html }}</div>
-    <form action='/comic' method='get'>
-        <button type="submit" id="getBookButton" disabled>Find my comic!</button>
-    </form>
 {% endblock %}

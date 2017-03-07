@@ -52,6 +52,10 @@ function fMovieCounter(results) {
     $('#movieCounter').html(results);
     if (parseInt(results) > 5) {
         $('#getBookButton').prop('disabled', false);
+        $('#progressBar').empty();
+    }
+    else {
+        $("#bar").attr("value", parseInt(results));
     }
 }
 

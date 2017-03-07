@@ -2,11 +2,14 @@
 {% block title %}flix2comix -  Your Comic!{% endblock %}
 
 {% block content %}
-
+<div class="comicPage">
+<div class="row">
+    <div class="col-xs-12 col-md-2"></div>
+    <div class="col-xs-12 col-md-8">
     <h2>We recommend you read: </h2>
     <h1>{{ comic.title }}</h1>
     <p>by: {{ comic.author }}</p>
-    <img src="http://covers.openlibrary.org/b/isbn/{{ comic.isbn10 }}-L.jpg">
+    <img src="/static/images/{{ comic.isbn10 }}.jpg">
     {% if comic.artist %}
     <p>art by: {{ comic.artist }}</p>
     {% endif %}
@@ -18,5 +21,10 @@
       <form action="/comic" method="POST">
         <button type="submit" id="login">Another Book!</button></a>
       </form>
+    </div>
+    <div class="col-xs-12 col-md-2">
+    </div>
+</div>
+</div>
 
 {% endblock %}

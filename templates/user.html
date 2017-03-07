@@ -2,12 +2,16 @@
 {% block title %}flix2comix - User page{% endblock %}
 
 {% block content %}
-    <h1>Hello, {{ user.nickname|default("you", true) }}!</h1><br>
-    <div id="user_info">
-        <p>Your account info:</p>
-        email: {{ user.email }}<br>
-        nickname: {{ user.nickname }}
-    </div>
+<div class="row">
+    <div class="col-xs-12 col-md-10">
+        <h1>Hello, {{ user.nickname|default("you", true) }}!</h1><br>
+        <div id="userInfo">
+            <p>Your account info:</p>
+            email: {{ user.email }}<br>
+            nickname: {{ user.nickname }}
+        </div>
+    <div>
+</div>
 <!--         <br>
       <button type="submit" id="editUserButton">Edit User
       </button>
@@ -24,47 +28,50 @@
       </button>
         <br>
     </div> -->
-    
+<div class="row"></div>
+<div class="row">
+    <div class="col-xs-12 col-md-5">   
+        <div class="comics">
+            <h3>Here are the comics we've suggested to you:</h3>
+            <p>(Please rate any that you have read. We love feedback!!)
+            <form action="/update_comic" method="post">
+                {% for comic in comics %}
+                    <img src="http://covers.openlibrary.org/b/isbn/{{ comic[1].isbn10 }}-M.jpg"><br>
 
-<div class='userContent'>
-<div class="comics">
-    <h3>Here are the comics we've suggested to you:</h3>
-    <p>(Please rate any that you have read. We love feedback!!)
-    <form action="/update_comic" method="post">
-        {% for comic in comics %}
-            <img src="http://covers.openlibrary.org/b/isbn/{{ comic[1].isbn10 }}-M.jpg"><br>
 
-
-            <h2>{{ comic[1].title }}</h2>
-            <!-- how to refer to RATING table info? -->
-            <p>Current rating: {% if comic[0].user_rating %}
-                {{ comic[0].user_rating + 3 }} 
-                {% else %}
-                not yet rated
-                {% endif %}
-                <br>
-            change rating to:<select name="{{ comic[1].comic_id }}" id="{{ comic[1].comic_id }}">
-                <option value="0"></option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-            </select><br><br><br>          
-        {% endfor %}
-        <input type="submit">
-    </form>
-</div>
-</div>
-
-<div class='userContent'>
-    <div class="movie">
-        <h3>Here are the movies you've rated so far:</h3>
-            {% for movie in movies %}
-                <h2>{{ movie[1].title }}</h2><br>
-                <img src="https://image.tmdb.org/t/p/w500{{ movie[1].image_src }}"><br>  
-            {% endfor %}
+                    <h2>{{ comic[1].title }}</h2>
+                    <!-- how to refer to RATING table info? -->
+                    <p>Current rating: {% if comic[0].user_rating %}
+                        {{ comic[0].user_rating + 3 }} 
+                        {% else %}
+                        not yet rated
+                        {% endif %}
+                        <br>
+                    change rating to:<select name="{{ comic[1].comic_id }}" id="{{ comic[1].comic_id }}">
+                        <option value="0"></option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select><br><br><br>          
+                {% endfor %}
+                <input type="submit">
+            </form>
+            <form action="/comic" method="POST">
+                <button type="submit" id="login">Another Book!</button></a>
+            </form>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-1"></div>
+    <div class="col-xs-12 col-md-5"> 
+            <div class="movie">
+                <h3>Here are the movies you've rated so far:</h3>
+                    {% for movie in movies %}
+                        <h2>{{ movie[1].title }}</h2><br>
+                        <img src="https://image.tmdb.org/t/p/w500{{ movie[1].image_src }}"><br>  
+                    {% endfor %}
+            </div>
     </div>
 </div>
-
 {% endblock %}
