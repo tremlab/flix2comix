@@ -1,0 +1,708 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.5
+-- Dumped by pg_dump version 9.5.5
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: comic_recs; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE comic_recs (
+    cr_id integer NOT NULL,
+    user_id integer NOT NULL,
+    comic_id integer NOT NULL,
+    recd_at date NOT NULL,
+    user_read boolean,
+    user_rating integer
+);
+
+
+ALTER TABLE comic_recs OWNER TO vagrant;
+
+--
+-- Name: comic_recs_cr_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE comic_recs_cr_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE comic_recs_cr_id_seq OWNER TO vagrant;
+
+--
+-- Name: comic_recs_cr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE comic_recs_cr_id_seq OWNED BY comic_recs.cr_id;
+
+
+--
+-- Name: comics; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE comics (
+    comic_id integer NOT NULL,
+    isbn10 character varying(10),
+    isbn13 character varying(13),
+    author character varying(100),
+    artist character varying(100),
+    publisher character varying(50),
+    title character varying(200),
+    summary text,
+    bechdel integer NOT NULL,
+    visual integer NOT NULL,
+    linear integer NOT NULL,
+    cheerful integer NOT NULL,
+    active integer NOT NULL,
+    magical integer NOT NULL,
+    mature integer NOT NULL
+);
+
+
+ALTER TABLE comics OWNER TO vagrant;
+
+--
+-- Name: comics_comic_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE comics_comic_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE comics_comic_id_seq OWNER TO vagrant;
+
+--
+-- Name: comics_comic_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE comics_comic_id_seq OWNED BY comics.comic_id;
+
+
+--
+-- Name: movie_ratings; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE movie_ratings (
+    mr_id integer NOT NULL,
+    user_id integer NOT NULL,
+    movie_id integer NOT NULL,
+    rating integer NOT NULL,
+    rated_at date
+);
+
+
+ALTER TABLE movie_ratings OWNER TO vagrant;
+
+--
+-- Name: movie_ratings_mr_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE movie_ratings_mr_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE movie_ratings_mr_id_seq OWNER TO vagrant;
+
+--
+-- Name: movie_ratings_mr_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE movie_ratings_mr_id_seq OWNED BY movie_ratings.mr_id;
+
+
+--
+-- Name: movies; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE movies (
+    movie_id integer NOT NULL,
+    tmdb_id character varying(12) NOT NULL,
+    imdb_id character varying(20) NOT NULL,
+    overview text,
+    tagline character varying(200),
+    image_src character varying(200) NOT NULL,
+    title character varying(200) NOT NULL,
+    tmdb_rating numeric,
+    bechdel integer NOT NULL,
+    visual integer NOT NULL,
+    linear integer NOT NULL,
+    cheerful integer NOT NULL,
+    active integer NOT NULL,
+    magical integer NOT NULL,
+    mature integer NOT NULL
+);
+
+
+ALTER TABLE movies OWNER TO vagrant;
+
+--
+-- Name: movies_movie_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE movies_movie_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE movies_movie_id_seq OWNER TO vagrant;
+
+--
+-- Name: movies_movie_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE movies_movie_id_seq OWNED BY movies.movie_id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: vagrant
+--
+
+CREATE TABLE users (
+    user_id integer NOT NULL,
+    nickname character varying(30),
+    email character varying(50) NOT NULL,
+    password character varying(200) NOT NULL
+);
+
+
+ALTER TABLE users OWNER TO vagrant;
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE users_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE users_user_id_seq OWNER TO vagrant;
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE users_user_id_seq OWNED BY users.user_id;
+
+
+--
+-- Name: cr_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comic_recs ALTER COLUMN cr_id SET DEFAULT nextval('comic_recs_cr_id_seq'::regclass);
+
+
+--
+-- Name: comic_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comics ALTER COLUMN comic_id SET DEFAULT nextval('comics_comic_id_seq'::regclass);
+
+
+--
+-- Name: mr_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movie_ratings ALTER COLUMN mr_id SET DEFAULT nextval('movie_ratings_mr_id_seq'::regclass);
+
+
+--
+-- Name: movie_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movies ALTER COLUMN movie_id SET DEFAULT nextval('movies_movie_id_seq'::regclass);
+
+
+--
+-- Name: user_id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY users ALTER COLUMN user_id SET DEFAULT nextval('users_user_id_seq'::regclass);
+
+
+--
+-- Data for Name: comic_recs; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY comic_recs (cr_id, user_id, comic_id, recd_at, user_read, user_rating) FROM stdin;
+10	6	9	2017-02-16	\N	\N
+11	6	12	2017-02-16	\N	\N
+12	6	13	2017-02-16	\N	\N
+13	6	4	2017-02-16	\N	\N
+14	17	10	2017-02-16	\N	\N
+34	3	9	2017-02-17	\N	\N
+\.
+
+
+--
+-- Name: comic_recs_cr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('comic_recs_cr_id_seq', 152, true);
+
+
+--
+-- Data for Name: comics; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY comics (comic_id, isbn10, isbn13, author, artist, publisher, title, summary, bechdel, visual, linear, cheerful, active, magical, mature) FROM stdin;
+10	159643774X	9781596437746	Tamaki, Mariko	Jillian Tanmaki	First Second	This one summer	Every summer, Rose goes with her mom and dad to a lake house in Awago Beach. It's their getaway, their refuge. Rosie's friend Windy is always there, too, like the little sister she never had. But this summer is different. Rose's mom and dad won't stop fighting, and when Rose and Windy seek a distraction from the drama, they find themselves with a whole new set of problems. One of the local teens, just a couple of years older than Rose and Windy, is caught up in something bad... Something life threatening. It's a summer of secrets, and sorrow, and growing up, and it's a good thing Rose and Windy have each other.	-2	-2	-2	0	3	4	2
+2	0871354365	9780871354365	Jodorowsky, Alexandro	\N	Epic Comics	The incal	John Difool, a low-class detective in a degenerate dystopian world, finds his life turned upside down when he discovers an ancient, mystical artifact called "The Incal." Difools adventures will bring him into conflict with the galaxys greatest warrior, the Metabaron, and will pit him against the awesome powers of the Technopope. These encounters and many more make up a tale of comic and cosmic proportions that has Difool fighting for not only his very survival, but also the survival of the entire universe.	-4	-3	4	-1	-3	-4	2
+6	0375714693	9780375714696	Clowes, Daniel	\N	Pantheon	Ice Haven	Clowes (Ghost World) casts a harsh spotlight on the misfit dreamers who inhabit the small town of Ice Havenin this riveting graphic novel. Originally published in a somewhat different form as part of Clowes's occasional comic book Eightball, this piece finds Clowes moving beyond the withering satire of his earlier works to a more nuanced style. Readers will wince even as they feel sympathy for the self-deluded characters who reside in Ice Haven. Take narrator Random Wilder, writer of doggerel poetry. One would think it'd be easy to be the best poet in a place like Ice Haven, but Wilder has a rival, Ida Wentz, an old woman who likes to bake cookies. Wilder spends his spare time plotting against her. Ida's visiting granddaughter, Vida, also has literary yearnings, despite having sold zero copies of her fanzine. These and other oddballs play out their stories against the mysterious disappearance of a little boy named David Goldberg, whose possible murder recalls the Leopold and Loeb case.	-3	2	3	3	3	3	0
+7	1897299753	9781897299753	Adrian Tomine	\N	Drawn and Quarterly	Shortcomings	Adrian Tomine draws his mid-twenties slackers with an impeccable, exact line for every slumpy gesture and cultivated rumple. In Shortcomings, he tackles a book-length comic for the first time after three collections of stories, and his maturity shows not so much in the ages of his characters, who are still slackly wandering, dropping out of grad school or managing a movie theater, but in his calm and masterful handling of his story, in which vividly individual characters wander through the maze of imposed and self generated stereotypes of Asian and American identities (the title is a wry allusion to one of the most enduring of those assumptions). Never has that old commonplace that the personal is the political seemed more paralyzing, and more true.	-3	1	-2	2	4	3	2
+11	1906838429	9781906838423	Glyn Dillon	\N	SelfMadeHero	The Nao of Brown	Twenty-eight-year-old Nao Brown, who's hafu (half Japanese, half English), is not well. She's suffering from obsessive-compulsive disorder (OCD) and fighting violent urges to harm other people. But that's not who she really wants to be. Nao has dreams. She wants to quiet her unruly mind; she wants to get her design and illustration career off the ground; and she wants to find love, perfect love. Nao's life continues to seesaw. Her boyfriend dumps her; a toy deal falls through. But she also meets Gregory, an interesting washing-machine repairman, and Ray, an art teacher at the Buddhist Center. She begins to draw and meditate to ease her mind and open her heart and in doing so comes to a big realization: Life isn't black-and-white after all . . . it's much more like brown.	-3	-2	1	3	3	-2	-2
+4	1596430966	9781596430969	Emmanuel Guibert	\N	First Second	Alan's War	When Alan Cope joined the army and went off to fight in World War II, he had no idea what he was getting into. This graphic memoir is the story of his life during wartime, a story told with poignant intimacy and matchless artistry. Across a generation, a deep friendship blossomed between Alan Cope and author/artist Emmanuel Guibert. From it, Alan's War was born, a graphic novel that is a deeply personal and moving experience, straight from the heart of the Greatest Generation. A unique piece of WWII literature and a ground-breaking graphic memoir.	-4	-2	2	1	1	3	-1
+9	0930289722	9780930289720	Kyle Baker	\N	Vertigo	Why I Hate Saturn	Cranky Columnist Anne Merkel is only happy when she's complaining...about her editors, about being single in New York City, about running out of Scotch. But when her long-lost sister shows up claiming to be Queen of the Leather Astro-Girls of Saturn, Anne's going to wish she'd never complained about anything...	-2	4	1	-3	-1	2	-2
+13	0312384483	9780312384487	Yang, Gene	\N	Square Fish	American Born Chinese	A tour-de-force by rising indy comics star Gene Yang, American Born Chinese tells the story of three apparently unrelated characters: Jin Wang, who moves to a new neighborhood with his family only to discover that he's the only Chinese-American student at his new school; the powerful Monkey King, subject of one of the oldest and greatest Chinese fables; and Chin-Kee, a personification of the ultimate negative Chinese stereotype, who is ruining his cousin Dann's life with his yearly visits. Their lives and stories come together with an unexpected twist in this action-packed modern fable. American Born Chinese is an amazing ride, all the way up to the astonishing climax.	-3	-4	-2	-1	-2	-4	3
+3	0375714723	9780375714726	Charles Burns	\N	Pantheon Books	Black hole	The prodigiously talented Burns hit the comics scene in the '80s via Raw magazine, wielding razor-sharp, ironic-retro graphics. Over the years his work has developed a horrific subtext perpetually lurking beneath the mundane suburban surface. In the dense, unnerving Black Hole, Burns combines realism, never a concern for him before, and an almost convulsive surrealism. The setting is Seattle during the early '70s. A sexually transmitted disease, the "bug," is spreading among teenagers. Those who get it develop bizarre mutations, sometimes subtle, like a tiny mouth at the base of one boy's neck, and sometimes obvious and grotesque. The most visibly deformed victims end up living as homeless campers in the woods, venturing into the streets only when they have to, shunned by normal society. The story follows two teens, Keith and Chris, as they get the bug. Their dreams and hallucinations, made of deeply disturbing symbolism merging sexuality and sickness, are a key part of the tale. The AIDS metaphor is obvious, but the bug also amplifies already existing teen emotions and the wrenching changes of puberty. Burns's art is inhumanly precise, and he makes ordinary scenes as creepy as his nightmare visions of a world where intimacy means a life worse than death.	-3	-4	2	4	3	-4	-3
+1	0679406417	9780679406419	Spiegelman, Art	\N	Pantheon Books	Maus	Maus is a haunting tale within a tale. Vladek's harrowing story of survival is woven into the author's account of his tortured relationship with his aging father. Against the backdrop of guilt brought by survival, they stage a normal life of small arguments and unhappy visits. This astonishing retelling of our century's grisliest news is a story of survival, not only of Vladek but of the children who survive even the survivors. Maus studies the bloody pawprints of history and tracks its meaning for all of us.	-3	2	4	4	2	4	-3
+8	1401204953	9781401204952	Morrison, Grant	Frank Quitely	Vertigo	WE3	Writer Grant Morrison and artist Frank Quitely deliver the emotional journey of WE3, three house pets weaponized for lethal combat by the government, as they search for "home" and ward off the shadowy agency that created them. With nervous systems amplified to match their terrifying mechanical exoskeletons, the members of Animal Weapon 3 (WE3) have the firepower of a battalion between them. But they are just the program's prototypes, and now that their testing is complete, they're slated to be permanently "decommissioned," causing them to seize their one chance to make a desperate run for freedom. Relentlessly pursued by their makers, the WE3 team must navigate a frightening and confusing world where their instincts and heightened abilities make them as much a threat as those hunting them, but a world, nonetheless, in which somewhere there is something called "home."	-4	-3	-3	2	-4	3	0
+5	1770460209	9781770460201	Ware, Chris	\N	Drawn and Quarterly	Lint: Acme Novelty Library #20	The latest entry in Ware's roughly annual Acme Novelty Library is devoted to a heretofore peripheral figure in his ongoing "Rusty Bown" saga, Jordan Lint, who appeared briefly in earlier installments as a school bully. Here Ware chronicles nothing less than Lint's entire life in a series of single-page vignettes, from a newborn who sees the world in the form of benday dots to his troubled childhood, stormy adolescence, and failures as husband, father, and businessman, right up to his eventual death. Ware uses a wide palette of graphic devices isolated words, symbolic objects, and near-subliminal flashbacks, to convey Lint's inner thoughts and hidden turmoil. The assertive Lint seems a departure from Ware's typically hapless and passive protagonists, but he shares many of their traits, from a damaging early trauma to a near-spiritual attachment to a childhood home. And Ware's formal mastery of the medium continues to astonish. While he uses his characteristic techniques, meticulous drawing; tiny, repetitive panels ingeniously juxtaposed; creative typography [Gto brilliant effect, here he adds to his arsenal with a powerful sequence depicting a harrowing experience that happened to Lint's son, rendered in a primitive scrawl that's all the more powerful for its radical break with Ware's usual detached approach.	-4	-2	3	3	4	4	-2
+12	177046218X	9781770462182	Craig Thompson	\N	Drawn & Quarterly	Blankets	Blankets is the story of a young man coming of age and finding the confidence to express his creative voice. Craig Thompson's poignant graphic memoir plays out against the backdrop of a Midwestern winterscape: finely-hewn linework draws together a portrait of small town life, a rigorously fundamentalist Christian childhood, and a lonely, emotionally mixed-up adolescence. Under an engulfing blanket of snow, Craig and Raina fall in love at winter church camp, revealing to one another their struggles with faith and their dreams of escape. Over time though, their personal demons resurface and their relationship falls apart. It's a universal story, and Thompson's vibrant brushstrokes and unique page designs make the familiar heartbreaking all over again. This groundbreaking graphic novel, winner of two Eisner and three Harvey Awards, is an eloquent portrait of adolescent yearning; first love (and first heartache); faith in crisis; and the process of moving beyond all of that. Beautifully rendered in pen and ink, Thompson has created a love story that lasts.	-4	-2	-1	-2	3	2	1
+\.
+
+
+--
+-- Name: comics_comic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('comics_comic_id_seq', 13, true);
+
+
+--
+-- Data for Name: movie_ratings; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY movie_ratings (mr_id, user_id, movie_id, rating, rated_at) FROM stdin;
+1	15	11	1	\N
+2	7	17	1	\N
+3	1	15	0	\N
+4	1	6	-1	\N
+5	12	15	0	\N
+6	15	8	-1	\N
+7	6	11	2	\N
+8	3	10	-2	\N
+9	9	3	2	\N
+11	2	4	-2	\N
+12	10	11	-2	\N
+13	11	5	2	\N
+14	4	5	2	\N
+15	16	9	2	\N
+16	11	13	-2	\N
+17	16	5	-1	\N
+19	14	12	0	\N
+20	19	2	2	\N
+21	11	1	-1	\N
+22	12	6	-1	\N
+23	5	10	2	\N
+24	20	3	0	\N
+25	13	4	-2	\N
+28	1	7	-1	\N
+29	1	9	-2	\N
+30	19	12	1	\N
+31	17	6	-2	\N
+34	9	1	-1	\N
+37	3	12	-2	\N
+38	17	15	-1	\N
+40	14	8	-2	\N
+41	18	8	0	\N
+43	20	15	-1	\N
+44	8	9	-1	\N
+45	3	5	1	\N
+46	17	7	-1	\N
+49	14	5	0	\N
+50	20	9	2	\N
+51	6	5	-1	\N
+52	2	5	1	\N
+53	9	16	1	\N
+54	10	4	0	\N
+55	7	14	-1	\N
+56	10	15	-1	\N
+57	20	1	-1	\N
+58	3	3	1	\N
+59	19	8	2	\N
+64	14	6	-2	\N
+65	6	16	-1	\N
+66	7	10	-1	\N
+67	19	4	0	\N
+68	9	10	-2	\N
+69	18	7	1	\N
+71	8	3	1	\N
+72	17	4	0	\N
+74	5	16	-1	\N
+75	4	12	-2	\N
+76	3	13	2	\N
+77	13	11	2	\N
+78	12	5	0	\N
+79	4	16	-2	\N
+80	17	3	2	\N
+81	13	17	-1	\N
+82	5	7	1	\N
+83	7	2	0	\N
+84	16	13	-1	\N
+85	3	8	-2	\N
+86	15	6	-1	\N
+87	16	15	-1	\N
+88	4	4	1	\N
+89	9	15	0	\N
+91	13	8	1	\N
+92	7	7	-1	\N
+95	17	16	-2	\N
+96	11	10	1	\N
+97	18	5	1	\N
+98	11	12	0	\N
+99	6	17	1	\N
+101	14	11	-2	\N
+103	2	16	-1	\N
+108	7	9	-1	\N
+109	10	14	2	\N
+110	14	3	-1	\N
+111	4	6	0	\N
+112	5	5	0	\N
+113	11	2	-2	\N
+115	14	15	0	\N
+116	15	16	-2	\N
+117	15	10	-2	\N
+118	13	10	-1	\N
+120	15	12	1	\N
+122	15	4	-1	\N
+123	10	13	-2	\N
+125	14	14	-1	\N
+126	20	7	2	\N
+128	12	7	2	\N
+129	2	8	-1	\N
+130	10	8	1	\N
+131	4	17	0	\N
+132	12	13	-1	\N
+135	10	3	-2	\N
+136	5	14	0	\N
+137	4	8	1	\N
+138	1	17	-2	\N
+140	15	7	1	\N
+142	18	6	0	\N
+144	19	5	-1	\N
+145	6	8	1	\N
+146	12	17	1	\N
+147	18	9	-2	\N
+151	14	10	1	\N
+153	6	10	-1	\N
+154	15	14	2	\N
+156	15	9	-2	\N
+157	4	11	0	\N
+158	16	3	0	\N
+160	16	16	0	\N
+162	2	7	-1	\N
+164	12	16	-2	\N
+165	13	9	-1	\N
+166	1	14	-1	\N
+169	15	3	0	\N
+170	3	9	0	\N
+171	2	1	1	\N
+172	19	6	2	\N
+173	19	7	2	\N
+174	2	6	-2	\N
+176	7	3	-1	\N
+177	17	2	0	\N
+178	16	4	1	\N
+180	18	14	1	\N
+181	19	16	1	\N
+182	2	9	2	\N
+184	8	5	1	\N
+189	9	4	0	\N
+190	16	11	-2	\N
+191	5	8	0	\N
+192	2	13	-2	\N
+193	20	16	2	\N
+195	1	3	2	\N
+198	17	13	2	\N
+201	14	4	0	\N
+202	9	11	0	\N
+203	5	17	2	\N
+205	5	4	-2	\N
+207	1	13	-1	\N
+208	16	10	0	\N
+210	17	10	-1	\N
+211	6	3	0	\N
+213	10	12	0	\N
+214	4	2	-1	\N
+215	2	15	-1	\N
+217	6	1	-2	\N
+218	7	4	-2	\N
+219	8	8	1	\N
+220	7	5	0	\N
+222	13	15	-1	\N
+223	13	5	-1	\N
+224	5	6	0	\N
+225	10	1	-2	\N
+229	18	11	-2	\N
+235	18	4	-2	\N
+238	6	13	-2	\N
+239	1	10	-2	\N
+243	15	13	-2	\N
+245	8	14	1	\N
+247	4	15	0	\N
+249	1	11	0	\N
+251	17	11	-2	\N
+258	16	14	-2	\N
+260	2	10	2	\N
+261	7	8	1	\N
+262	17	8	-2	\N
+266	2	12	2	\N
+268	6	2	0	\N
+270	13	12	2	\N
+271	3	4	1	\N
+277	20	5	2	\N
+278	5	1	0	\N
+281	8	11	-2	\N
+283	13	14	0	\N
+284	9	13	1	\N
+285	20	13	1	\N
+286	11	3	-2	\N
+288	5	12	0	\N
+290	10	6	-1	\N
+293	19	9	0	\N
+294	15	15	2	\N
+298	3	11	1	\N
+\.
+
+
+--
+-- Name: movie_ratings_mr_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('movie_ratings_mr_id_seq', 554, true);
+
+
+--
+-- Data for Name: movies; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY movies (movie_id, tmdb_id, imdb_id, overview, tagline, image_src, title, tmdb_rating, bechdel, visual, linear, cheerful, active, magical, mature) FROM stdin;
+1	15	tt0033467	Newspaper magnate, Charles Foster Kane is taken from his mother as a boy and made the ward of a rich industrialist. As a result, every well-meaning, tyrannical or self-destructive move he makes for the rest of his life appears in some way to be a reaction to that deeply wounding event.	It's Terrific!	/n8wfFsQ5vtm6dM8vdgXb6OLv2GY.jpg	Citizen Kane	7.8	-1	-2	0	3	3	3	-1
+2	115	tt0118715	Jeffrey "The Dude" Lebowski, a Los Angeles slacker who only wants to bowl and drink white Russians, is mistaken for another Jeffrey Lebowski, a wheelchair-bound millionaire, and finds himself dragged into a strange series of events involving nihilists, adult film producers, ferrets, errant toes, and large sums of money.	They figured he was a lazy time wasting slacker. They were right.	/aHaVjVoXeNanfwUwQ92SG7tosFM.jpg	The Big Lebowski	7.7	-1	2	3	-2	0	-1	-2
+3	238	tt0068646	Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge.	An offer you can't refuse.	/d4KNaTrltq6bpkFS01pYtyXa09m.jpg	The Godfather	8.3	1	2	2	3	1	3	-2
+4	9377	tt0091042	Charismatic teen Ferris Bueller plays hooky in Chicago with his girlfriend and best friend.	One man's struggle to take it easy.	/kto49vDiSzooEdy4WQH2RtaC9oP.jpg	Ferris Bueller's Day Off	7.4	4	0	-2	-4	-2	3	2
+5	12429	tt0876563	The son of a sailor, 5-year old Sosuke lives a quiet life on an oceanside cliff with his mother Lisa. One fateful day, he finds a beautiful goldfish trapped in a bottle on the beach and upon rescuing her, names her Ponyo. But she is no ordinary goldfish. The daughter of a masterful wizard and a sea goddess, Ponyo uses her father's magic to transform herself into a young girl and quickly falls in love with Sosuke, but the use of such powerful sorcery causes a dangerous imbalance in the world. As the moon steadily draws nearer to the earth and Ponyo's father sends the ocean's mighty waves to find his daughter, the two children embark on an adventure of a lifetime to save the world and fulfill Ponyo's dreams of becoming human.	Welcome To A World Where Anything Is Possible.	/3s0mpSpLkI7cIhqWGrGbsiyvlsH.jpg	Ponyo	7.5	4	-4	3	-3	2	-4	4
+6	64690	tt0780504	A Hollywood stunt performer who moonlights as a wheelman for criminals discovers that a contract has been put on him after a heist gone wrong.	There are no clean getaways.	/nu7XIa67cXc2t7frXCE5voXUJcN.jpg	Drive	7.3	4	-3	-2	4	-3	2	-3
+8	194662	tt2562232	A fading actor best known for his portrayal of a popular superhero attempts to mount a comeback by appearing in a Broadway play. As opening night approaches, his attempts to become more altruistic, rebuild his career, and reconnect with friends and family prove more difficult than expected.	or (The Unexpected Virtue of Ignorance)	/rSZs93P0LLxqlVEbI001UKoeCQC.jpg	Birdman	7.3	4	-2	2	3	-3	-3	-2
+9	703	tt0075686	In the city of New York, comedian Alvy Singer falls in love with the ditsy Annie Hall.	A nervous romance.	/j9vVQCSyNWvyBU6w9BxExZRlpZZ.jpg	Annie Hall	7.7	4	4	3	1	4	4	2
+10	949	tt0113277	Obsessive master thief, Neil McCauley leads a top-notch crew on various daring heists throughout Los Angeles while determined detective, Vincent Hanna pursues him without rest. Each man recognizes and respects the ability and the dedication of the other even though they are aware their cat-and-mouse game may end in violence.	A Los Angeles crime saga	/zMyfPUelumio3tiDKPffaUpsQTD.jpg	Heat	7.6	1	-1	2	3	-3	3	-3
+11	19995	tt0499549	In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora on a unique mission, but becomes torn between following orders and protecting an alien civilization.	Enter the World of Pandora.	/kmcqlZGaSh20zpTbuoF0Cdn07dT.jpg	Avatar	7.1	1	-3	-1	0	-3	-3	-1
+12	562	tt0095016	NYPD cop John McClane's plan to reconcile with his estranged wife, Holly, is thrown for a serious loop when minutes after he arrives at her office, the entire building is overtaken by a group of pitiless terrorists. With little help from the LAPD, wisecracking McClane sets out to single-handedly rescue the hostages and bring the bad guys down.	40 Stories. Twelve Terrorists. One Cop.	/r7CDkRjZIAP79skLaTTvRk8eUp3.jpg	Die Hard	7.3	4	-1	-3	1	-3	4	-2
+13	76341	tt1392190	An apocalyptic story set in the furthest reaches of our planet, in a stark desert landscape where humanity is broken, and most everyone is crazed fighting for the necessities of life. Within this world exist two rebels on the run who just might be able to restore order. There's Max, a man of action and a man of few words, who seeks peace of mind following the loss of his wife and child in the aftermath of the chaos. And Furiosa, a woman of action and a woman who believes her path to survival may be achieved if she can make it across the desert back to her childhood homeland.	What a Lovely Day.	/kqjL17yufvn9OVLyXYpvtyrFfak.jpg	Mad Max: Fury Road	7.2	4	-4	-4	3	-4	3	-2
+14	11282	tt0366551	Sometimes, it takes a strange night to put everything else into focus. And that's exactly what happens to Harold and his roommate, Kumar, when they set out to get the best stoner fix money can buy: White Castle hamburgers. Both guys are at a crossroads, about to make major decisions that will affect the course of their lives. Yet they arrive at wisdom by accident as they drive around New Jersey in search of fast food.	Fast Food. High Times.	/wmLW4WTxXTTzD3nruLVWTl3m55b.jpg	Harold & Kumar Go to White Castle	6.4	4	3	-1	-3	-3	2	-2
+15	136795	tt2404463	Uptight and straight-laced, FBI Special Agent Sarah Ashburn is a methodical investigator with a reputation for excellence--and hyper-arrogance. Shannon Mullins, one of Boston P.D.'s "finest," is foul-mouthed and has a very short fuse, and uses her gut instinct and street smarts to catch the most elusive criminals. Neither has ever had a partner, or a friend for that matter. When these two wildly incompatible law officers join forces to bring down a ruthless drug lord, they become the last thing anyone expected: Buddies.	Action's never been so hot!	/tM3hDt8JcU8Y8i6vzTcbnocM2bx.jpg	The Heat	6.5	4	3	-3	-3	-3	4	-1
+16	120467	tt2278388	The Grand Budapest Hotel tells of a legendary concierge at a famous European hotel between the wars and his friendship with a young employee who becomes his trusted protégé. The story involves the theft and recovery of a priceless Renaissance painting, the battle for an enormous family fortune and the slow and then sudden upheavals that transformed Europe during the first half of the 20th century.	A perfect holiday without leaving home.	/nX5XotM9yprCKarRH4fzOq1VM1J.jpg	The Grand Budapest Hotel	7.9	-1	-3	2	-2	-2	-2	-2
+17	137113	tt1631867	Major Bill Cage is an officer who has never seen a day of combat when he is unceremoniously demoted and dropped into combat. Cage is killed within minutes, managing to take an alpha alien down with him. He awakens back at the beginning of the same day and is forced to fight and die again... and again - as physical contact with the alien has thrown him into a time loop.	Live, Die, Repeat	/tpoVEYvm6qcXueZrQYJNRLXL88s.jpg	Edge of Tomorrow	7.7	-1	-3	1	2	-4	-2	-2
+7	120	tt0120737	Young hobbit Frodo Baggins, after inheriting a mysterious ring from his uncle Bilbo, must leave his home in order to keep it from falling into the hands of its evil creator. Along the way, a fellowship is formed to protect the ringbearer and make sure that the ring arrives at its final destination: Mt. Doom, the only place where it can be destroyed.	One ring to rule them all	/bxVxZb5O9OxCO0oRUNdCnpy9NST.jpg	The Fellowship of the Ring	7.9	-1	-3	2	1	-3	-4	-1
+\.
+
+
+--
+-- Name: movies_movie_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('movies_movie_id_seq', 17, true);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY users (user_id, nickname, email, password) FROM stdin;
+1	Adam	awatson0@epa.gov	1
+2	Steven	shunter1@netlog.com	2
+3	Brandon	bgutierrez2@nsw.gov.au	3
+4	George	gdaniels3@whitehouse.gov	4
+5	Sarah	smcdonald4@phpbb.com	5
+6	Bonnie	bmartinez5@taobao.com	6
+7	Julia	jolson6@de.vu	7
+8	Fred	falexander7@printfriendly.com	8
+9	Carolyn	canderson8@mlb.com	9
+10	Dennis	dbennett9@time.com	10
+11	Bonnie	bturnera@tuttocitta.it	11
+12	Charles	cbakerb@dmoz.org	12
+13	Clarence	clittlec@huffingtonpost.com	13
+14	Brian	bspencerd@google.com.br	14
+15	Roy	rpaynee@theglobeandmail.com	15
+16	Katherine	kwalkerf@eventbrite.com	16
+17	Jimmy	jreyesg@i2i.jp	17
+18	Ronald	rmorrish@icq.com	18
+19	Michelle	mdiazi@europa.eu	19
+20	Benjamin	bnguyenj@chicagotribune.com	20
+\.
+
+
+--
+-- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('users_user_id_seq', 58, true);
+
+
+--
+-- Name: comic_recs_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comic_recs
+    ADD CONSTRAINT comic_recs_pkey PRIMARY KEY (cr_id);
+
+
+--
+-- Name: comic_recs_user_id_comic_id_key; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comic_recs
+    ADD CONSTRAINT comic_recs_user_id_comic_id_key UNIQUE (user_id, comic_id);
+
+
+--
+-- Name: comics_isbn13_key; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comics
+    ADD CONSTRAINT comics_isbn13_key UNIQUE (isbn13);
+
+
+--
+-- Name: comics_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comics
+    ADD CONSTRAINT comics_pkey PRIMARY KEY (comic_id);
+
+
+--
+-- Name: movie_ratings_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movie_ratings
+    ADD CONSTRAINT movie_ratings_pkey PRIMARY KEY (mr_id);
+
+
+--
+-- Name: movie_ratings_user_id_movie_id_key; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movie_ratings
+    ADD CONSTRAINT movie_ratings_user_id_movie_id_key UNIQUE (user_id, movie_id);
+
+
+--
+-- Name: movies_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movies
+    ADD CONSTRAINT movies_pkey PRIMARY KEY (movie_id);
+
+
+--
+-- Name: users_email_key; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: comic_recs_comic_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comic_recs
+    ADD CONSTRAINT comic_recs_comic_id_fkey FOREIGN KEY (comic_id) REFERENCES comics(comic_id);
+
+
+--
+-- Name: comic_recs_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY comic_recs
+    ADD CONSTRAINT comic_recs_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+
+--
+-- Name: movie_ratings_movie_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movie_ratings
+    ADD CONSTRAINT movie_ratings_movie_id_fkey FOREIGN KEY (movie_id) REFERENCES movies(movie_id);
+
+
+--
+-- Name: movie_ratings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY movie_ratings
+    ADD CONSTRAINT movie_ratings_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
