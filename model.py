@@ -151,14 +151,25 @@ class ComicRec(db.Model):
 #___________________________________________________________________________
 #___________________________________________________________________________
 
+# below for LOCAL hosting
+# def connect_to_db(app, db_name="flix2comix"):
+#     """Connect to database."""
+#     db_path = 'postgresql:///%s' % (db_name)
+#     app.config['SQLALCHEMY_DATABASE_URI'] = db_path
+#     app.config['SQLALCHEMY_ECHO'] = True
+#     db.app = app
+#     db.init_app(app)
 
-def connect_to_db(app, db_name="flix2comix"):
-    """Connect to database."""
-    db_path = 'postgresql:///%s' % (db_name)
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_path
-    app.config['SQLALCHEMY_ECHO'] = True
+# for heroku:
+
+
+def connect_to_db(app, db_uri=None):
+    """Connect our application to our database."""
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgres:///flix2comix'
     db.app = app
     db.init_app(app)
+    print "Connected to DB."
 
 if __name__ == '__main__':
     """if run directly, allows for interaction with database.

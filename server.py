@@ -258,12 +258,16 @@ if __name__ == '__main__':
     #not caching on reload
     app.jinja_env.auto_reload = app.debug
 
-    connect_to_db(app)
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
 
     #use debug toolbar
     # DebugToolbarExtension(app)
 
-    app.run(port=5000, host='0.0.0.0')
+    PORT = int(os.environ.get("PORT", 5000))
+
+    DEBUG = "NO_DEBUG" not in os.environ
+
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
 
 
 
