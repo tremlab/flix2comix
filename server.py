@@ -8,7 +8,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
 from sqlalchemy.orm.exc import NoResultFound
-from passlib.hash import argon2
+# from passlib.hash import argon2
 
 import analysis
 
@@ -38,7 +38,7 @@ def process_register_form():
         flash("Email already registered!")
         return render_template("/")
     except NoResultFound:
-        password = argon2.hash(password)
+        # password = argon2.hash(password)
         user = User(email=email,
                     password=password,
                     nickname=nickname)
@@ -67,7 +67,8 @@ def process_login_form():
         return redirect("/login")
 
     # if user found, check if password matches
-    if argon2.verify(password, user_check.password):
+    # if argon2.verify(password, user_check.password):    #hash not workign on heroku
+    if password == user_check.password:
         session['user_id'] = user_check.user_id
         session['movies_dismissed'] = []
         flash("Logged in successfully")
