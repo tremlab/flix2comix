@@ -93,7 +93,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nickname = db.Column(db.String(30))
     email = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(12), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
 
     # implicit:
     # movie_ratings = db.relationship("MovieRating")
