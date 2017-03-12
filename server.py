@@ -8,6 +8,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
 from sqlalchemy.orm.exc import NoResultFound
+import os
+
 # from passlib.hash import argon2
 
 import analysis
