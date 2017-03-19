@@ -17,14 +17,6 @@ class FlaskTests(unittest.TestCase):
         self.assertIn("Please rate at least", result.data)
 
 
-
-    # BAD!! don't test database here!!!!
-    # def test_login(self):
-    #     result = self.client.post('/login-validation',
-    #                               data={'email': 'monkey@pants.com', 'password': 'boo'},
-    #                               follow_redirects=True)
-    #     self.assertIn("Logged in successfully", result.data)
-
     def setUp(self):
         """Stuff to do before every test."""
 

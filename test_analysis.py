@@ -39,7 +39,7 @@ class flix2comixTest(unittest.TestCase):
         # Connect to test database
 
         # Create tables and add sample data
-        # os.system("dropdb testdb")
+        os.system("dropdb testdb")
         os.system("createdb testdb")
         os.system("psql testdb < BACKUPflix2comix")
 
@@ -50,6 +50,7 @@ class flix2comixTest(unittest.TestCase):
         """Do at end of every test."""
 
         db.session.close()
+        db.engine.dispose()
         os.system("dropdb testdb")
 
 
