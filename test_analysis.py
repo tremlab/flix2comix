@@ -8,6 +8,8 @@ import unittest
 import os
 from model import (User, Movie, Comic, MovieRating, ComicRec,
                    connect_to_db, db)
+from sqlalchemy.pool import NullPool
+
 
 
 class flix2comixTest(unittest.TestCase):
@@ -39,7 +41,12 @@ class flix2comixTest(unittest.TestCase):
         # Connect to test database
 
         # Create tables and add sample data
-        os.system("dropdb testdb")
+        # os.system("dropdb testdb")
+
+        # engine = create_engine(
+        #   'postgresql+psycopg2://scott:tiger@localhost/test',
+        #   poolclass=NullPool)
+        
         os.system("createdb testdb")
         os.system("psql testdb < BACKUPflix2comix")
 
@@ -50,7 +57,7 @@ class flix2comixTest(unittest.TestCase):
         """Do at end of every test."""
 
         db.session.close()
-        db.engine.dispose()
+        # db.engine.dispose()  -- didn't work :(
         os.system("dropdb testdb")
 
 
