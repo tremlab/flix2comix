@@ -1,4 +1,4 @@
-(https://beaumert.tinytake.com/sf/MTQzMTE2OV81MTE1NDMy)
+![flix2comix](https://beaumert.tinytake.com/sf/MTQzMTE2OV81MTE1NDMy)
 
 # flix2comics
 
@@ -24,18 +24,18 @@ ________________
 
 The user must first login to get started. As a brush-up on JavaScript, I had fun building the form validation by hand (regex FTW!)
 
-(https://beaumert.tinytake.com/sf/MTQzMTE2Nl81MTE1NDI5)
+![flix2comix](https://beaumert.tinytake.com/sf/MTQzMTE2Nl81MTE1NDI5)
 
 Then the user is welcomed into the movie area, where they are encouraged to rate at least 5 movies so we can build an accurate profile of their preferences.
 
 
-(https://beaumert.tinytake.com/sf/MTQzMTE2OF81MTE1NDMx)
+![flix2comix](https://beaumert.tinytake.com/sf/MTQzMTE2OF81MTE1NDMx)
 
 And now, the fun part! The user starts rating movies. Mimicing Netflix, the user simply clicks on a star to rate how much they liekd the movie, and an Ajax call passes that info to the server, which responds with the next movie to rate.
 
 A progress bar shows the user how close they are to enabling the "Find a comic" option.
 
-(https://beaumert.tinytake.com/sf/MTQzMTE2Ml81MTE1NDA1)
+![flix2comix](https://beaumert.tinytake.com/sf/MTQzMTE2Ml81MTE1NDA1)
 
 
 
