@@ -1,4 +1,4 @@
-![flix2comix](https://beaumert.tinytake.com/sf/MTQzMTE2OV81MTE1NDMy)
+![flix2comix](https://github.com/tremlab/pics/blob/master/logo.png)
 
 # flix2comics
 
