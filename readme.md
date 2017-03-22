@@ -41,7 +41,7 @@ Once they've rated more than 5 movies, the magic happens! Clicking "Find my comi
 
 ![flix2comix](https://github.com/tremlab/pics/blob/master/summer.png)
 
-This book is the logged in the users profile for future reference, and then the user can clik to get the second closest mathcing book, and so on.
+This book is the logged in the users profile for future reference, and then the user can click to get the second closest matching book, and so on.
 
 ________________
 ## Under the Hood
@@ -63,9 +63,11 @@ ________________
 
 In my next phase I plan to:
 
+- Implement React on the front end.
 - Build out a smarter user page, where users can rank comics, and edit/delete previous movie ratings.
 - Email users with their comic recommendation, and a follow up email two weeks later to see how they liked their comic.
 - Build an admin page for superusers to add/update media content.
+- hash passwords.
 - Allow users to tweet their comic discovery.
 
 
